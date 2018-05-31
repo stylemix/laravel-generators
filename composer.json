@@ -1,5 +1,5 @@
 {
-    "name": "bpocallaghan/generators",
+    "name": "stylemix/laravel-generators",
     "description": "Custom Laravel 5 File Generators with config and publishable stubs.",
     "keywords": [
         "laravel",
