@@ -3,17 +3,6 @@
 Custom Laravel 5 File Generators with a config file and publishable stubs.
 You can publish the stubs. You can add your own stubs to generate.
 
-This package is being used in the [Admin Starter Project](https://github.com/bpocallaghan/laravel-admin-starter)
-(Page Builder, Roles, Impersonation, Analytics, Blog, News, Banners, FAQ, Testimonials and more)
-
-```
-Laravel 5.1 - v2.1.3
-Laravel 5.2 - v3.0.3
-Laravel 5.3 - v3.0.3
-Laravel 5.4 - v4.1.9
-Laravel 5.5 - v5.0.0+ 
-```
-
 ## Commands
 ```bash
 php artisan generate:publish-stubs
@@ -24,6 +13,8 @@ php artisan generate:migration
 php artisan generate:migration:pivot
 php artisan generate:seed
 php artisan generate:resource
+php artisan generate:asset
+php artisan generate:crud
 php artisan generate:repository
 php artisan generate:contract
 php artisan generate:notification
@@ -36,12 +27,6 @@ php artisan generate:console
 php artisan generate:middleware
 php artisan generate:file
 ```
-
-### Option for all the commands
-`--force` This will overide the existing file, if it exist.
-
-### Option for all the commands, except `views` and `migration:pivot`
-`--plain` This will use the .plain stub of the command (generate an empty controller)
 
 ### Customization
 This is for all except the `migration` and `migration:pivot` commands
@@ -59,7 +44,7 @@ You can create your own stubs with the available placeholders.
 You can create new settings' types, for example: 
 - 'exception' => ['namespace' => '\Exceptions', 'path' => './app/Exceptions/', 'postfix' => 'Exception'],
 
-[Available placeholders](https://github.com/bpocallaghan/generators/blob/master/resources/stubs/example.stub)
+[Available placeholders](http://git.stylemix.net:82/azamatx/laravel-generators/blob/stylemix/resources/stubs/example.stub)
 
 ## Views Custom Stubs
 
@@ -74,7 +59,7 @@ php artisan generate:view admin.posts --stub=another_file
 Update your project's `composer.json` file.
 
 ```
-composer require bpocallaghan/generators --dev
+composer require stylemix/laravel-generators --dev
 ```
 
 Add the Service Provider (Laravel 5.5 has automatic discovery of packages)
@@ -99,7 +84,8 @@ Run `php artisan` command to see the new commands in the `generate:*` section
 - [Migrations](#migrations)
 - [Pivot Tables](#pivot-tables)
 - [Database Seeders](#database-seeders)
-- [Resource](#resource)
+- [API Resource](#resource)
+- [CRUD](#crud)
 - [Repository](#repository)
 - [Contract](#contract)
 - [Notifications](#notifications)
@@ -170,7 +156,7 @@ php artisan generate:seed BarTableSeeder
 
 - The `TableSeeder` suffix will be added if needed.
 
-### Resource
+### API Resource
 
 ```
 php artisan generate:resource bar
@@ -179,15 +165,17 @@ php artisan generate:resource foo.bar_baz
 php artisan generate:resource bar --schema="title:string, body:text, slug:string:unique, published_at:date"
 ```
 
-- This will generate a Bar model, BarsController, resources views (in config), create_bars_table migration, BarTableSeeder
-- In the config there is a `resource_views` array, you can specify the views that you want to generate there, just make sure the stub exist.
-- This will also ask you to generate the 'repository - contract pattern' files.
+### CRUD
 
-### Repository
 ```
-php artisan generate:repository Posts
+php artisan generate:crud bar
+php artisan generate:crud foo.bar
+php artisan generate:crud foo.bar_baz
+php artisan generate:crud bar --schema="title:string, body:text, slug:string:unique, published_at:date"
 ```
-This will generate a Posts Repository file to be used in your controller.
+
+- This will generate a Bar model, BarsController, Bar json resource, frontend assets (in config), create_bars_table migration, BarTableSeeder
+- In the config there is a `resource_assets` array, you can specify the frontend assets that you want to generate there, just make sure the stub exist.
 
 ### Contract
 ```
@@ -270,6 +258,24 @@ php artisan generate:file foo.bar --type=view
 php artisan generate:file foo.bar --type=controller
 php artisan generate:file foo.bar --type=model
 php artisan generate:file foo.bar --type=model --stub=model_custom
+```
+
+### Option for all the commands
+`--force` This will override the existing file, if it exist.
+
+
+### Option for all the commands, except `views` and `migration:pivot`
+`--plain` This will use the .plain stub of the command (generate an empty controller)
+
+
+### Option `--relations`
+Usage:
+```
+--relations="<relation definition 1>,<relation definition 2>,..."
+```
+Relation definition:
+```
+<resource>:<relation type>:foreign(<key>):input(<input type>):as(<attribute>)
 ```
 
 ## Shortcuts

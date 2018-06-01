@@ -31,6 +31,12 @@ class FileCommand extends GeneratorCommand
     protected $type = 'File';
 
 
+	protected function getType()
+	{
+		return $this->option('type');
+	}
+
+
     /**
      * Get the console command options.
      *
@@ -45,14 +51,6 @@ class FileCommand extends GeneratorCommand
                 InputOption::VALUE_OPTIONAL,
                 'The type of file: model, view, controller, migration, seed',
                 'view'
-            ],
-            // optional for the generate:console
-            [
-                'command',
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'The terminal command that should be assigned.',
-                'command:name'
             ],
         ], parent::getOptions());
     }

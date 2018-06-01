@@ -1,9 +1,10 @@
-<?php
+{!!$phpOpenTag!!}
 
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class {{class}} extends Migration
+class {{$class}} extends Migration
 {
     /**
      * Run the migrations.
@@ -12,7 +13,9 @@ class {{class}} extends Migration
      */
     public function up()
     {
-        {{schema_up}}
+        Schema::create('{{$table}}', function (Blueprint $table) {
+            {!! $schema_up !!}
+        });
     }
 
     /**
@@ -22,6 +25,6 @@ class {{class}} extends Migration
      */
     public function down()
     {
-        {{schema_down}}
+        Schema::dropIfExists('{{$table}}');
     }
 }

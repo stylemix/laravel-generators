@@ -28,12 +28,6 @@ class ConsoleCommand extends GeneratorCommand
     protected $type = 'Console';
 
     /**
-     * Add an extra option to use for generating the file
-     * @var string
-     */
-    protected $extraOption = 'command';
-
-    /**
      * Get the console command options.
      *
      * @return array

@@ -2,6 +2,8 @@
 
 namespace Bpocallaghan\Generators\Commands;
 
+use Bpocallaghan\Generators\Migrations\SchemaParser;
+use Bpocallaghan\Generators\Traits\NameBuilders;
 use Illuminate\Console\DetectsApplicationNamespace;
 use Illuminate\Support\Composer;
 use Illuminate\Filesystem\Filesystem;
@@ -13,7 +15,7 @@ use Illuminate\Console\GeneratorCommand as LaravelGeneratorCommand;
 
 abstract class GeneratorCommand extends LaravelGeneratorCommand
 {
-    use ArgumentsOptions, Settings, DetectsApplicationNamespace;
+    use ArgumentsOptions, Settings, DetectsApplicationNamespace, NameBuilders;
 
     /**
      * @var Composer
@@ -25,24 +27,6 @@ abstract class GeneratorCommand extends LaravelGeneratorCommand
 	 */
 	protected $view;
 
-    /**
-     * The resource argument
-     *
-     * @var string
-     */
-    protected $resource = "";
-
-    /**
-     * The lowercase resource argument
-     *
-     * @var string
-     */
-    protected $resourceLowerCase = "";
-
-    /**
-     * @var string
-     */
-    protected $extraOption = '';
 
 	function __construct(Filesystem $files, Composer $composer, \Illuminate\Contracts\View\Factory $view)
     {
@@ -62,12 +46,12 @@ abstract class GeneratorCommand extends LaravelGeneratorCommand
     {
 	    // setup
 	    $this->setSettings();
-	    $this->getResourceName($this->getUrl(false));
+	    $this->setResourceName(str_replace($this->settings['postfix'], '', $this->getArgumentNameOnly()));
 
 	    // check the path where to create and save file
 	    $path = $this->getPath('');
 	    if ($this->files->exists($path) && $this->optionForce() === false) {
-		    $this->error($this->type . ' already exists!');
+		    $this->error(ucfirst($this->getType()) . ' already exists!');
 
 		    return;
 	    }
@@ -76,10 +60,10 @@ abstract class GeneratorCommand extends LaravelGeneratorCommand
 	    $this->makeDirectory($path);
 
 	    // build file and save it at location
-	    $this->files->put($path, $this->buildClass($this->getArgumentNameOnly()));
+	    $this->files->put($path, $this->buildClass());
 
 	    // output to console
-	    $this->info(ucfirst($this->option('type')) . ' created successfully.');
+	    $this->info(ucfirst($this->getType()) . ' created successfully.');
 	    $this->info('- ' . $path);
 
 	    // if we need to run "composer dump-autoload"
@@ -89,29 +73,33 @@ abstract class GeneratorCommand extends LaravelGeneratorCommand
     }
 
 	/**
+	 * Get current generator type.
+	 * Override this method to define custom type
+	 *
+	 * @return string
+	 */
+	protected function getType() {
+		return strtolower($this->type ?: str_replace('Command', '', class_basename(static::class)));
+	}
+
+	/**
+	 * @return array|mixed|string
+	 */
+	protected function getFileBaseName()
+	{
+		$name = $this->getArgumentNameOnly();
+
+		return $name;
+	}
+
+	/**
 	 * Get the filename of the file to generate
 	 *
 	 * @return string
 	 */
 	protected function getFileName()
 	{
-		$name = $this->getArgumentNameOnly();
-
-		switch ($this->option('type')) {
-			case 'view':
-
-				break;
-			case 'model':
-			case 'resource':
-				$name = $this->getModelName();
-				break;
-			case 'controller':
-				$name = $this->getControllerName($name);
-				break;
-			case 'seed':
-				$name = $this->getSeedName($name);
-				break;
-		}
+		$name = $this->getFileBaseName();
 
 		// override the name
 		if ($this->option('name')) {
@@ -214,7 +202,7 @@ abstract class GeneratorCommand extends LaravelGeneratorCommand
 	 * @return string
 	 * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
 	 */
-	protected function buildClass($name)
+	protected function buildClass($name = null)
 	{
 		$template = $this->getStub();
 
@@ -222,7 +210,7 @@ abstract class GeneratorCommand extends LaravelGeneratorCommand
 			$engine = $this->view->getEngineFromPath($template);
 			view()->addNamespace('stubs', dirname($template));
 
-			return $engine->get($template, ['__env' => view() ] + $this->getData() + ['schema' => $this->getSchema()]);
+			return $engine->get($template, ['__env' => view() ] + $this->getData());
 		}
 
 		$stub = $this->files->get($this->getStub());
@@ -242,7 +230,6 @@ abstract class GeneratorCommand extends LaravelGeneratorCommand
 	{
 		$name = $this->argumentName();
 		$url = $this->getUrl(); // /foo/bar
-		$relation = $this->option('relation') ? explode(':', $this->option('relation')) : false;
 
 		return [
 			// <?php
@@ -276,10 +263,10 @@ abstract class GeneratorCommand extends LaravelGeneratorCommand
 			'model' => $this->getModelName(),
 
 			// Bar
-			'resource' => $this->resource,
+			'resource' => $this->getResourceName(),
 
 			// bar
-			'resourceLowercase' => $this->resourceLowerCase,
+			'resourceLowercase' => strtolower($this->getResourceName()),
 
 			// ./resources/views/foo/bar.blade.php
 			'path' => $this->getPath(''),
@@ -293,242 +280,16 @@ abstract class GeneratorCommand extends LaravelGeneratorCommand
 			// bars
 			'table' => $this->getTableName($url),
 
-			// console command name
-			'command' => $this->option('command'),
-
 			// contract file name
 			'contract' => $this->getContractName(),
 
 			// contract namespace
 			'contractNamespace' => $this->getContractNamespace(),
 
-			// resource namespace
-			'resourceClassNamespace' => $this->getResourceClassNamespace(),
-
-			// check if there is a scout option
-			'scoutIncluded' => $this->option('scout') ? true : false,
-
-			// check if there is a relation option
-			'hasRelation' => $this->option('relation') ? true : false,
-
-			// hasMany, belongsTo, hasOne ...
-			'relationType' => $relation ? $relation[0] : '',
-
-			// books, author, posts etc
-			'relatedTo' => $relation ? $relation[1] : '',
-
-			// authour_id, post_id etc
-			'foreignKey' => $relation ? $relation[2] : '',
-
-			// current crud's local key
-			'localKey' => count($relation) > 3 ? $relation[3] : '',
-
-			// "Many to many" relationship's joing table name
-			'pivotTable' => count($relation) > 4 ? $relation[4] : '',
-
-			// final model's name for "hasManyThrough" relation
-			'finalModel' => $relation ? $relation[1] : '',
-
-			// intermediate model's name for "hasManyThrough" relation
-			'intermediateModel' => $relation ? $relation[2] : '',
-
-			// the name of the foreign key on the intermediate model for "hasManyThrough" relation
-			'intermediateKey' => count($relation) > 3 ? $relation[3] : '',
-
-			// the name of the foreign key on the final model for "hasManyThrough" relation
-			'finalKey' => count($relation) > 4 ? $relation[4] : '',
+			// extra information
+			'extra' => $this->getExtra(),
 		];
 	}
-
-    /**
-     * Get the resource name
-     *
-     * @param      $name
-     * @param bool $format
-     * @return string
-     */
-    protected function getResourceName($name, $format = true)
-    {
-        // we assume its already formatted to resource name
-        if ($name && $format === false) {
-            return $name;
-        }
-
-        $name = isset($name) ? $name : $this->resource;
-
-        $this->resource = lcfirst(str_singular(class_basename($name)));
-        $this->resourceLowerCase = strtolower($name);
-
-        return $this->resource;
-    }
-
-    /**
-     * Get the name for the model
-     *
-     * @param null $name
-     * @return string
-     */
-    protected function getModelName($name = null)
-    {
-        $name = isset($name) ? $name : $this->resource;
-
-        //return ucwords(camel_case($this->getResourceName($name)));
-
-        return str_singular(ucwords(camel_case(class_basename($name))));
-    }
-
-    /**
-     * Get the name for the controller
-     *
-     * @param null $name
-     * @return string
-     */
-    protected function getControllerName($name = null)
-    {
-        return ucwords(camel_case(str_replace($this->settings['postfix'], '', ($name))));
-    }
-
-    /**
-     * Get the name for the seed
-     *
-     * @param null $name
-     * @return string
-     */
-    protected function getSeedName($name = null)
-    {
-        return ucwords(camel_case(str_replace($this->settings['postfix'], '',
-            $this->getResourceName($name))));
-    }
-
-    /**
-     * Get the name of the collection
-     *
-     * @param null $name
-     * @return string
-     */
-    protected function getCollectionName($name = null)
-    {
-        return str_plural($this->getResourceName($name));
-    }
-
-    /**
-     * Get the plural uppercase name of the resouce
-     * @param null $name
-     * @return null|string
-     */
-    protected function getCollectionUpperName($name = null)
-    {
-        $name = str_plural($this->getResourceName($name));
-
-        $pieces = explode('_', $name);
-        $name = "";
-        foreach ($pieces as $k => $str) {
-            $name .= ucfirst($str);
-        }
-
-        return $name;
-    }
-
-    /**
-     * Get the name of the contract
-     * @param null $name
-     * @return string
-     */
-    protected function getContractName($name = null)
-    {
-        $name = isset($name) ? $name : $this->resource;
-
-        $name = str_singular(ucwords(camel_case(class_basename($name))));
-
-        return $name . config('generators.settings.contract.postfix');
-    }
-
-    /**
-     * Get the namespace of where contract was created
-     * @param bool $withApp
-     * @return string
-     */
-    protected function getContractNamespace($withApp = true)
-    {
-        // get path from settings
-        $path = config('generators.settings.contract.namespace') . '\\';
-
-        // dont add the default namespace if specified not to in config
-        $path .= str_replace('/', '\\', $this->getArgumentPath());
-
-        $pieces = array_map('ucfirst', explode('/', $path));
-
-        $namespace = ($withApp === true ? $this->getAppNamespace() : '') . implode('\\', $pieces);
-
-        $namespace = rtrim(ltrim(str_replace('\\\\', '\\', $namespace), '\\'), '\\');
-
-        return $namespace;
-    }
-
-    /**
-     * Get the path to the view file
-     *
-     * @param $name
-     * @return string
-     */
-    protected function getViewPath($name)
-    {
-        $pieces = explode('/', $name);
-
-        // dont plural if reserve word
-        foreach ($pieces as $k => $value) {
-            if (!in_array($value, config('generators.reserve_words'))) {
-                $pieces[$k] = str_plural(snake_case($pieces[$k]));
-            }
-        }
-
-        $name = implode('.', $pieces);
-
-        //$name = implode('.', array_map('str_plural', explode('/', $name)));
-
-        return strtolower(rtrim(ltrim($name, '.'), '.'));
-    }
-
-    /**
-     * Remove 'admin' and 'webiste' if first in path
-     * The Base Controller has it as a 'prefix path'
-     *
-     * @param $name
-     * @return string
-     */
-    protected function getViewPathFormatted($name)
-    {
-        $path = $this->getViewPath($name);
-
-        if (strpos($path, 'admin.') === 0) {
-            $path = substr($path, 6);
-        }
-
-        if (strpos($path, 'admins.') === 0) {
-            $path = substr($path, 7);
-        }
-
-        if (strpos($path, 'website.') === 0) {
-            $path = substr($path, 8);
-        }
-
-        if (strpos($path, 'websites.') === 0) {
-            $path = substr($path, 9);
-        }
-
-        return $path;
-    }
-
-    /**
-     * Get the table name
-     *
-     * @param $name
-     * @return string
-     */
-    protected function getTableName($name)
-    {
-        return str_replace("-", "_", str_plural(snake_case(class_basename($name))));
-    }
 
     /**
      * Get name of file/class with the pre and post fix
@@ -549,7 +310,7 @@ abstract class GeneratorCommand extends LaravelGeneratorCommand
      */
     protected function getDefaultNamespace($rootNamespace)
     {
-        return $rootNamespace . config('generators.' . strtolower($this->type) . '_namespace');
+        return $rootNamespace . config('generators.' . $this->getType() . '_namespace');
     }
 
 	/**
@@ -606,6 +367,20 @@ abstract class GeneratorCommand extends LaravelGeneratorCommand
 	}
 
 	/**
+	 * Get fields schema
+	 *
+	 * @return array
+	 */
+	protected function getSchema()
+	{
+		if ($schema = $this->optionSchema()) {
+			return (new SchemaParser())->parse($schema);
+		}
+
+		return [];
+	}
+
+	/**
 	 * Get full namespace for resource class
 	 * @return string
 	 */
@@ -650,7 +425,7 @@ abstract class GeneratorCommand extends LaravelGeneratorCommand
 
         // if no stub, we assume its the same as the type
         if (is_null($this->option('stub'))) {
-            $stub = $this->option('type') . ($plain ? '_plain' : '') . '_stub';
+            $stub = $this->getType() . ($plain ? '_plain' : '') . '_stub';
         }
 
         return $stub;
@@ -690,6 +465,21 @@ abstract class GeneratorCommand extends LaravelGeneratorCommand
                 InputOption::VALUE_OPTIONAL,
                 'If you want to override the name of the file that will be generated'
             ],
+            [
+                'extra',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Extra information to use in stubs'
+            ],
         ];
     }
+
+
+	protected function getExtra() {
+		if ($schema = $this->option('extra')) {
+			return (new SchemaParser())->parse($schema);
+		}
+
+		return [];
+	}
 }

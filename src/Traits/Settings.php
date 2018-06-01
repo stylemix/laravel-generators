@@ -16,7 +16,7 @@ trait Settings
      */
     public function setSettings()
     {
-        $type = $this->option('type');
+        $type = $this->getType();
         $options = config('generators.settings');
 
         $found = false;

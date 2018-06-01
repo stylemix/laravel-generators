@@ -114,7 +114,7 @@ class SchemaParser
             if (str_contains($option, '(')) {
                 preg_match('/([a-z]+)\(([^\)]+)\)/i', $option, $matches);
 
-                $results[$matches[1]] = $matches[2];
+                $results[$matches[1]] = array_map('trim', explode(',', $matches[2]));
             }
             else {
                 $results[$option] = true;

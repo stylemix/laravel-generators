@@ -19,7 +19,7 @@ class SyntaxBuilder
      * @param  array $schema
      * @param  array $meta
      *
-     * @return string
+     * @return array
      */
     public function create($schema, $meta)
     {
@@ -164,33 +164,58 @@ class SyntaxBuilder
             return $this->$method($field);
         }, $schema);
 
-        return implode("\n" . str_repeat(' ', 12), $fields);
+        return implode("\n" . str_repeat(' ', 12), array_filter($fields));
     }
 
     /**
      * Construct the syntax to add a column.
      *
-     * @param  string $field
+     * @param  array $field
      *
      * @return string
      */
     private function addColumn($field)
     {
-        $syntax = sprintf("\$table->%s('%s')", $field['type'], $field['name']);
+		$name = $field['name'];
+		$type = $field['type'];
+		$arguments = $field['arguments'];
+
+		if (in_array(strtolower($type), ['hasone', 'hasmany', 'belongsto', 'belongstomany'])) {
+			switch (strtolower($type)) {
+			case 'belongsto':
+				$name = array_get($arguments, 1, $name . '_id');
+				$type = 'unsignedInteger';
+				$arguments = [];
+				break;
+			default:
+				return null;
+			}
+	    }
+
+		$syntax = sprintf("\$table->%s('%s')", $type, $name);
 
         // If there are arguments for the schema type, like decimal('amount', 5, 2)
         // then we have to remember to work those in.
-        if ($field['arguments']) {
+        if ($arguments) {
             $syntax = substr($syntax, 0, -1) . ', ';
 
-            $syntax .= implode(', ', $field['arguments']) . ')';
+            switch ($field['type']) {
+			case 'enum':
+				$syntax .= '[\'' . implode('\', \'', $arguments) . '\'])';
+				break;
+			default:
+				$syntax .= implode(', ', $arguments) . ')';
+			}
         }
 
         foreach ($field['options'] as $method => $value) {
-            $syntax .= sprintf("->%s(%s)", $method, $value === true ? '' : $value);
+        	if (in_array($method, ['form', 'rules'])) {
+        		continue;
+			}
+            $syntax .= sprintf("->%s(%s)", $method, $value === true ? '' : join(', ', $value));
         }
 
-        return $syntax .= ';';
+        return $syntax . ';';
     }
 
     /**

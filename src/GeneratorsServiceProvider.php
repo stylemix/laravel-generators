@@ -2,8 +2,11 @@
 
 namespace Bpocallaghan\Generators;
 
+use Bpocallaghan\Generators\Commands\AssetCommand;
 use Bpocallaghan\Generators\Commands\JobCommand;
 use Bpocallaghan\Generators\Commands\FileCommand;
+use Bpocallaghan\Generators\Commands\RequestCommand;
+use Bpocallaghan\Generators\Commands\ResourceCommand;
 use Bpocallaghan\Generators\Commands\SeedCommand;
 use Bpocallaghan\Generators\Commands\ViewCommand;
 use Bpocallaghan\Generators\Commands\EventCommand;
@@ -13,7 +16,7 @@ use Bpocallaghan\Generators\Commands\ConsoleCommand;
 use Bpocallaghan\Generators\Commands\PublishCommand;
 use Bpocallaghan\Generators\Commands\ContractCommand;
 use Bpocallaghan\Generators\Commands\ListenerCommand;
-use Bpocallaghan\Generators\Commands\ResourceCommand;
+use Bpocallaghan\Generators\Commands\CrudCommand;
 use Bpocallaghan\Generators\Commands\MigrationCommand;
 use Bpocallaghan\Generators\Commands\ControllerCommand;
 use Bpocallaghan\Generators\Commands\RepositoryCommand;
@@ -53,7 +56,10 @@ class GeneratorsServiceProvider extends ServiceProvider
 
         $this->registerCommand(ModelCommand::class, 'model');
         $this->registerCommand(ViewCommand::class, 'view');
+        $this->registerCommand(RequestCommand::class, 'request');
+        $this->registerCommand(ResourceCommand::class, 'resource');
         $this->registerCommand(ControllerCommand::class, 'controller');
+        $this->registerCommand(AssetCommand::class, 'asset');
 
         $this->registerCommand(MigrationCommand::class, 'migration');
         $this->registerCommand(MigrationPivotCommand::class, 'migrate.pivot');
@@ -74,7 +80,7 @@ class GeneratorsServiceProvider extends ServiceProvider
 
         $this->registerCommand(MiddlewareCommand::class, 'middleware');
 
-        $this->registerCommand(ResourceCommand::class, 'resource');
+        $this->registerCommand(CrudCommand::class, 'crud');
         $this->registerCommand(FileCommand::class, 'file');
     }
 

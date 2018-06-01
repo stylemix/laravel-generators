@@ -2,10 +2,15 @@
 
 namespace Bpocallaghan\Generators\Commands;
 
+use Bpocallaghan\Generators\Migrations\RelationsBuilder;
+use Bpocallaghan\Generators\Traits\HasRelations;
 use Symfony\Component\Console\Input\InputOption;
 
 class ModelCommand extends GeneratorCommand
 {
+
+	use HasRelations;
+
     /**
      * The console command name.
      *
@@ -27,11 +32,12 @@ class ModelCommand extends GeneratorCommand
      */
     protected $type = 'Model';
 
-    /**
-     * Execute the console command.
-     *
-     * @return void
-     */
+
+	/**
+	 * Execute the console command.
+	 *
+	 * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+	 */
     public function handle()
     {
         parent::handle();
@@ -47,12 +53,18 @@ class ModelCommand extends GeneratorCommand
         }
     }
 
-    /**
+
+	protected function getFileBaseName()
+	{
+		return $this->getModelName();
+	}
+
+	/**
      * Get the name for the migration
      *
      * @return string
      */
-    private function getMigrationName()
+    protected function getMigrationName()
     {
         return 'create_' . str_plural(strtolower($this->getArgumentNameOnly())) . '_table';
     }
@@ -67,6 +79,25 @@ class ModelCommand extends GeneratorCommand
         return array_merge([
             ['migration', 'm', InputOption::VALUE_NONE, 'Create a new migration file as well.'],
             ['schema', 's', InputOption::VALUE_OPTIONAL, 'Optional schema to be attached to the migration', null],
+			['relation', 'r', InputOption::VALUE_OPTIONAL, 'Define models relation.', null],
+			['scout', null, InputOption::VALUE_OPTIONAL, 'Define whether use scout or not.', null],
         ], parent::getOptions());
     }
+
+	protected function getData()
+	{
+		$schema = $this->getSchema();
+		$meta = ['name' => $this->getArgumentNameOnly()];
+		$relations = (new RelationsBuilder())->create($schema, $meta);
+
+		return array_merge(parent::getData(), $this->getRelationsData(), [
+			// model relations
+			'relations' => $relations,
+			// fields schema
+			'schema' => $schema,
+			// check if there is a scout option
+			'scoutIncluded' => $this->option('scout') ? true : false,
+		]);
+	}
+
 }

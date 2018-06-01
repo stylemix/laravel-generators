@@ -3,12 +3,16 @@
 namespace Bpocallaghan\Generators\Commands;
 
 use Bpocallaghan\Generators\Migrations\NameParser;
+use Bpocallaghan\Generators\Migrations\RelationsBuilder;
 use Bpocallaghan\Generators\Migrations\SchemaParser;
 use Bpocallaghan\Generators\Migrations\SyntaxBuilder;
+use Bpocallaghan\Generators\Traits\HasRelations;
 use Symfony\Component\Console\Input\InputOption;
 
 class MigrationCommand extends GeneratorCommand
 {
+	use HasRelations;
+
     /**
      * The console command name.
      *
@@ -37,27 +41,27 @@ class MigrationCommand extends GeneratorCommand
      */
     protected $meta;
 
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
+
+	/**
+	 * Execute the console command.
+	 *
+	 * @return mixed
+	 * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+	 */
     public function handle()
     {
         $this->meta = (new NameParser)->parse($this->argumentName());
 
-        $name = $this->qualifyClass($this->getNameInput());
-        $path = $this->getPath($name);
+        parent::handle();
 
-        if ($this->files->exists($path) && $this->optionForce() === false) {
-            return $this->error($this->type . ' already exists!');
-        }
-
-        $this->makeDirectory($path);
-        $this->files->put($path, $this->buildClass($name));
-
-        $this->info($this->type . ' created successfully.');
-        $this->info('- ' . $path);
+        // Generate pivot tables
+        collect($this->getSchema())
+			->filter(function ($field) {
+				return strtolower($field['type']) == 'belongstomany';
+			})
+			->each(function ($field) {
+				return $this->generatePivot($field);
+			});
 
         // if model is required
         if ($this->optionModel() === true || $this->optionModel() === 'true') {
@@ -71,73 +75,24 @@ class MigrationCommand extends GeneratorCommand
     }
 
     /**
-     * Build the class with the given name.
-     *
-     * @param  string $name
-     * @return string
-     */
-    protected function buildClass($name)
-    {
-        $stub = $this->files->get($this->getStub());
-
-        $this->replaceNamespace($stub, $name);
-        $this->replaceClassName($stub);
-        $this->replaceSchema($stub);
-        $this->replaceTableName($stub);
-
-        return $stub;
-    }
-
-    /**
      * Replace the class name in the stub.
      *
-     * @param  string $stub
      * @return $this
      */
-    protected function replaceClassName(&$stub)
+    protected function getClassName()
     {
-        $className = ucwords(camel_case($this->argumentName()));
-
-        $stub = str_replace('{{class}}', $className, $stub);
-
-        return $this;
-    }
-
-    /**
-     * Replace the schema for the stub.
-     *
-     * @param  string $stub
-     * @return $this
-     */
-    protected function replaceSchema(&$stub)
-    {
-        $schema = '';
-        if (!$this->optionPlain()) {
-            if ($schema = $this->optionSchema()) {
-                $schema = (new SchemaParser)->parse($schema);
-            }
-
-            $schema = (new SyntaxBuilder)->create($schema, $this->meta);
-        }
-
-        $stub = str_replace(['{{schema_up}}', '{{schema_down}}'], $schema, $stub);
-
-        return $this;
+        return ucwords(camel_case($this->argumentName()));
     }
 
     /**
      * Replace the table name in the stub.
      *
-     * @param  string $stub
+     * @param  string $url
      * @return $this
      */
-    protected function replaceTableName(&$stub)
+    protected function getTableName($url = '')
     {
-        $table = $this->meta['table'];
-
-        $stub = str_replace('{{table}}', $table, $stub);
-
-        return $this;
+        return $this->meta['table'];
     }
 
     /**
@@ -188,8 +143,30 @@ class MigrationCommand extends GeneratorCommand
     protected function getOptions()
     {
         return array_merge([
-            ['model', 'm', InputOption::VALUE_OPTIONAL, 'Want a model for this table?', true],
+            ['model', 'm', InputOption::VALUE_OPTIONAL, 'Want a model for this table?', false],
             ['schema', 's', InputOption::VALUE_OPTIONAL, 'Optional schema to be attached to the migration', null],
+			['relation', 'r', InputOption::VALUE_OPTIONAL, 'Define models relation.', null],
         ], parent::getOptions());
     }
+
+	protected function getData()
+	{
+		$replace = [];
+
+		if (!$this->optionPlain()) {
+			$schema = (new SyntaxBuilder)->create($this->getSchema(), $this->meta);
+			$replace = array_combine(['schema_up', 'schema_down'], $schema);
+		}
+
+		return array_merge(parent::getData(), $replace, $this->getRelationsData(), ['schema' => $this->getSchema()]);
+	}
+
+
+	protected function generatePivot($field)
+	{
+		$this->call('generate:migration:pivot', [
+			'tableOne' => $this->getTableName(),
+			'tableTwo' => $field['name'],
+		]);
+	}
 }
