@@ -2,10 +2,10 @@
 
 namespace Bpocallaghan\Generators\Commands;
 
-use Bpocallaghan\Generators\Migrations\NameParser;
-use Bpocallaghan\Generators\Migrations\RelationsBuilder;
-use Bpocallaghan\Generators\Migrations\SchemaParser;
-use Bpocallaghan\Generators\Migrations\SyntaxBuilder;
+use Bpocallaghan\Generators\Components\NameParser;
+use Bpocallaghan\Generators\Components\RelationsBuilder;
+use Bpocallaghan\Generators\Components\SchemaParser;
+use Bpocallaghan\Generators\Components\SyntaxBuilder;
 use Bpocallaghan\Generators\Traits\HasRelations;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -145,7 +145,6 @@ class MigrationCommand extends GeneratorCommand
         return array_merge([
             ['model', 'm', InputOption::VALUE_OPTIONAL, 'Want a model for this table?', false],
             ['schema', 's', InputOption::VALUE_OPTIONAL, 'Optional schema to be attached to the migration', null],
-			['relation', 'r', InputOption::VALUE_OPTIONAL, 'Define models relation.', null],
         ], parent::getOptions());
     }
 

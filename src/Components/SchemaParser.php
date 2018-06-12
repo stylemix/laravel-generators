@@ -1,6 +1,6 @@
 <?php
 
-namespace Bpocallaghan\Generators\Migrations;
+namespace Bpocallaghan\Generators\Components;
 
 class SchemaParser
 {

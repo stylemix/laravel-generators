@@ -2,7 +2,6 @@
 
 namespace Bpocallaghan\Generators\Commands;
 
-use Bpocallaghan\Generators\Migrations\RelationsBuilder;
 use Bpocallaghan\Generators\Traits\HasRelations;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -86,15 +85,9 @@ class ModelCommand extends GeneratorCommand
 
 	protected function getData()
 	{
-		$schema = $this->getSchema();
-		$meta = ['name' => $this->getArgumentNameOnly()];
-		$relations = (new RelationsBuilder())->create($schema, $meta);
-
 		return array_merge(parent::getData(), $this->getRelationsData(), [
-			// model relations
-			'relations' => $relations,
 			// fields schema
-			'schema' => $schema,
+			'schema' => $this->getSchema(),
 			// check if there is a scout option
 			'scoutIncluded' => $this->option('scout') ? true : false,
 		]);

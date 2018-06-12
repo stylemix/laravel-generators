@@ -2,7 +2,8 @@
 
 namespace Bpocallaghan\Generators\Commands;
 
-use Bpocallaghan\Generators\Migrations\SchemaParser;
+use Bpocallaghan\Generators\Components\ExtraParser;
+use Bpocallaghan\Generators\Components\SchemaParser;
 use Bpocallaghan\Generators\Traits\NameBuilders;
 use Illuminate\Console\DetectsApplicationNamespace;
 use Illuminate\Support\Composer;
@@ -474,12 +475,11 @@ abstract class GeneratorCommand extends LaravelGeneratorCommand
         ];
     }
 
-
 	protected function getExtra() {
 		if ($schema = $this->option('extra')) {
-			return (new SchemaParser())->parse($schema);
+			return (new ExtraParser())->parse($schema);
 		}
 
-		return [];
+		return collect();
 	}
 }

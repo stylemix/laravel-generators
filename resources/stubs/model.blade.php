@@ -12,6 +12,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class {{$class}} extends Model
 {
     use SoftDeletes;
+@if ($extra->has('search'))
+    use Searchable;
+    // {{ $extra['search']->option('type') }}
+@endif
 
     /**
      * The attributes that aren't mass assignable.
@@ -23,9 +27,9 @@ class {{$class}} extends Model
     protected $table = '{{$table}}';
 
 @foreach ($relations as $relation)
-    public function {{ $relation['name'] }}()
+    public function {{ $relation->name }}()
     {
-        {!! $relation['code'] !!}
+        {!! $relation->code !!}
     }
 
 @endforeach
