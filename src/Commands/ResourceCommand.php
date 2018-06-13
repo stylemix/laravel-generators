@@ -2,6 +2,7 @@
 
 namespace Bpocallaghan\Generators\Commands;
 
+use Bpocallaghan\Generators\Components\ResourceBuilder;
 use Bpocallaghan\Generators\Traits\HasRelations;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -39,17 +40,25 @@ class ResourceCommand extends GeneratorCommand
     {
         return array_merge([
             ['schema', 's', InputOption::VALUE_OPTIONAL, 'Optional schema of fields', null],
-            ['relation', 'r', InputOption::VALUE_OPTIONAL, "Define crud's relation.", null],
         ], parent::getOptions());
     }
 
-	protected function getData()
+    protected function getSchema()
+    {
+        $schema = parent::getSchema();
+        (new ResourceBuilder())->create($schema, [
+            'resourceClassNamespace' => $this->getResourceClassNamespace(),
+            'resourceClassPostfix' => $this->settings['postfix'],
+        ]);
+
+        return $schema;
+    }
+
+    protected function getData()
 	{
 		return array_merge(parent::getData(), $this->getRelationsData(), [
 			// resource namespace
 			'resourceClassNamespace' => $this->getResourceClassNamespace(),
-			// fields schema
-			'schema' => $this->getSchema(),
 		]);
 	}
 

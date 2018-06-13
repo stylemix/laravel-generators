@@ -3,9 +3,11 @@
 namespace Bpocallaghan\Generators\Commands;
 
 use Bpocallaghan\Generators\Components\ExtraParser;
+use Bpocallaghan\Generators\Components\RelationsBuilder;
 use Bpocallaghan\Generators\Components\SchemaParser;
 use Bpocallaghan\Generators\Traits\NameBuilders;
 use Illuminate\Console\DetectsApplicationNamespace;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Composer;
 use Illuminate\Filesystem\Filesystem;
 use Bpocallaghan\Generators\Traits\Settings;
@@ -29,7 +31,7 @@ abstract class GeneratorCommand extends LaravelGeneratorCommand
 	protected $view;
 
 
-	function __construct(Filesystem $files, Composer $composer, \Illuminate\Contracts\View\Factory $view)
+    function __construct(Filesystem $files, Composer $composer, \Illuminate\Contracts\View\Factory $view)
     {
         parent::__construct($files);
 
@@ -287,6 +289,9 @@ abstract class GeneratorCommand extends LaravelGeneratorCommand
 			// contract namespace
 			'contractNamespace' => $this->getContractNamespace(),
 
+            // fields schema
+            'schema' => $this->getSchema(),
+
 			// extra information
 			'extra' => $this->getExtra(),
 		];
@@ -370,15 +375,18 @@ abstract class GeneratorCommand extends LaravelGeneratorCommand
 	/**
 	 * Get fields schema
 	 *
-	 * @return array
+	 * @return array|Collection
 	 */
 	protected function getSchema()
 	{
-		if ($schema = $this->optionSchema()) {
-			return (new SchemaParser())->parse($schema);
-		}
+        if ($this->hasOption('schema') && $schema = $this->optionSchema()) {
+            $schema = (new SchemaParser())->parse($schema);
+            (new RelationsBuilder())->create($schema, ['name' => $this->getArgumentNameOnly()]);
+        } else {
+            $schema = collect();
+        }
 
-		return [];
+        return $schema;
 	}
 
 	/**

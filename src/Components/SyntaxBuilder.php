@@ -3,6 +3,7 @@
 namespace Bpocallaghan\Generators\Components;
 
 use Bpocallaghan\Generators\Exceptions\GeneratorException;
+use Illuminate\Support\Collection;
 
 class SyntaxBuilder
 {
@@ -147,7 +148,7 @@ class SyntaxBuilder
     /**
      * Construct the schema fields.
      *
-     * @param  array  $schema
+     * @param  Collection  $schema
      * @param  string $direction
      *
      * @return array
@@ -162,7 +163,7 @@ class SyntaxBuilder
             $method = "{$direction}Column";
 
             return $this->$method($field);
-        }, $schema);
+        }, $schema->all());
 
         return implode("\n" . str_repeat(' ', 12), array_filter($fields));
     }

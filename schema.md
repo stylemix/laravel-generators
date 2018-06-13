@@ -21,32 +21,6 @@ $table->string('email', 128)->unique();
 
 `form(email)` is reserved option for frontend stubs. Can be used to generate form inputs.
 
-#### For stubs
-`$schema` variable is available in stubs in following format:
-```php
-Array
-(
-    [0] => Array
-        (
-            [name] => field1
-            [type] => type
-            [arguments] => Array
-                (
-                    [0] => argument1
-                    [1] => argument2
-                )
-
-            [options] => Array
-                (
-                    [option1] => arg1,arg2
-                    [option2] => arg1,arg2
-                    ...
-                )
-
-        )
-	...
-```
-
 
 ### Defining relations
 
@@ -101,30 +75,56 @@ To customize the name of the pivot table and column names pass additional argume
 
 #### For stubs
 
-Use `$relations` variable in stubs as [Laravel Collection](https://laravel.com/docs/5.6/collections).
-Each item is instance of RelationItem class.
+Use `$schema` variable in stubs as [Laravel Collection](https://laravel.com/docs/5.6/collections).
+Each item is instance of SchemaItem class.
 
-In schema:
+For command:
+```
+--schema="username:string, email:string(128):unique:form(email)"
+```
+in stub will be:
+```php
+foreach ($schema as $name => $field) {
+	// $field - object instance of SchemaItem
+	// $name - schema item name: (user, comments)
+}
+
+$field = $schema['username']
+$field->name // username
+$field->type // string
+$field->typeOneOf('string', 'text') // true
+
+$field = $schema['email']
+$field->argument(0) // 128
+$field->option('unique') // true
+$field->option('unique') // true
+$field->option('form') // array("email")
+$field->option('form', 0) // "email"
+```
+
+For schema with relations:
 ```
 --schema="user:belongsTo, comments:hasMany(comment,post_id,id), roles:belongsToMany(role,user_role,user_id,role_id)"
 ```
 
 ```php
-foreach ($relations as $name => $relation) {
-	// $relation - object instance of RelationItem
-	// $name - relation name: (user, comments)
-}
+$field = $schema['user']
+$field->type // belongsTo
+$field->foreignKey // "user_id"
+$field->relationClass // "\App\User"
+$field->relationCode // "$this->>belongsTo(\App\User::class)"
 
-$relations['user']->type // belongsTo
-$relations['user']->class // \App\User
-$relations['user']->foreignKey // "user_id"
+$field = $schema['comments']
+$field->typeOneOf('hasMany', 'hasOne') // true
+$field->foreignKey // "post_id"
+$field->localKey // "id"
 
-$relations['comments']->typeOneOf('hasMany', 'hasOne') // true
-$relations['comments']->foreignKey // "post_id"
-$relations['comments']->localKey // "id"
-
-$relations['roles']->typeOneOf('belongsToMany') // true
-$relations['roles']->pivotTable // "user_role"
-$relations['roles']->foreignPivotKey // "user_id"
-$relations['roles']->relatedPivotKey // "role_id"
+$field = $schema['roles']
+$field->typeOneOf('belongsToMany') // true
+$field->pivotTable // "user_role"
+$field->foreignPivotKey // "user_id"
+$field->relatedPivotKey // "role_id"
 ```
+
+Only for `generate:model` variable `$relations` is available as [Laravel Collection](https://laravel.com/docs/5.6/collections).
+It contains schema fields only type of relations.

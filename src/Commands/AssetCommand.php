@@ -41,19 +41,12 @@ class AssetCommand extends GeneratorCommand
 	{
 		return array_merge([
 			['schema', 's', InputOption::VALUE_OPTIONAL, 'Optional schema to be attached to the migration', null],
-			['relation', 'r', InputOption::VALUE_OPTIONAL, 'Define models relation.', null],
-			['scout', null, InputOption::VALUE_OPTIONAL, 'Define whether use scout or not.', null],
 		], parent::getOptions());
 	}
 
-	protected function getData()
-	{
-		return array_merge(parent::getData(), $this->getRelationsData(), [
-			// fields schema
-			'schema' => $this->getSchema(),
-			// check if there is a scout option
-			'scoutIncluded' => $this->option('scout') ? true : false,
-		]);
-	}
+    protected function getData()
+    {
+        return array_merge(parent::getData(), $this->getRelationsData());
+    }
 
 }

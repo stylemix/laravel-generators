@@ -70,18 +70,6 @@ class ControllerCommand extends GeneratorCommand
 		return $this->getControllerName($this->getArgumentNameOnly());
 	}
 
-	/**
-	 * Get the console command options.
-	 *
-	 * @return array
-	 */
-	protected function getOptions()
-	{
-		return array_merge([
-			['relation', 'r', InputOption::VALUE_OPTIONAL, 'Define models relation.', null],
-		], parent::getOptions());
-	}
-
 	protected function getData()
 	{
 		return array_merge(parent::getData(), $this->getRelationsData(), [
@@ -89,5 +77,17 @@ class ControllerCommand extends GeneratorCommand
 			'resourceClassNamespace' => $this->getResourceClassNamespace(),
 		]);
 	}
+
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
+    protected function getOptions()
+    {
+        return array_merge([
+            ['schema', 's', InputOption::VALUE_OPTIONAL, 'Optional schema of fields', null],
+        ], parent::getOptions());
+    }
 
 }

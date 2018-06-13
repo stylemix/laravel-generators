@@ -2,6 +2,9 @@
 
 namespace Bpocallaghan\Generators\Components;
 
+use Bpocallaghan\Generators\Models\SchemaItem;
+use Illuminate\Support\Collection;
+
 class SchemaParser
 {
     /**
@@ -17,7 +20,7 @@ class SchemaParser
      *
      * @param  string $schema
      *
-     * @return array
+     * @return array|Collection
      */
     public function parse($schema)
     {
@@ -42,7 +45,7 @@ class SchemaParser
             $this->addField($segments);
         }
 
-        return $this->schema;
+        return collect($this->schema)->keyBy('name');
     }
 
     /**
@@ -54,7 +57,7 @@ class SchemaParser
      */
     private function addField($field)
     {
-        $this->schema[] = $field;
+        $this->schema[] = new SchemaItem($field);
 
         return $this;
     }

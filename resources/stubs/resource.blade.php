@@ -17,7 +17,11 @@ class {{ $class }} extends JsonResource
         return [
             'id' => $this->id,
 @foreach($schema as $field)
-            '{{ $field['name'] }}' => $this->{{ $field['name'] }},
+    @if ($field->isMultipleRelation())
+            '{{ $field->name }}' => {{ $field->relationResourceClass }}::collection($this->{{ $field->name }}),
+    @else
+			'{{ $field->name }}' => $this->{{ $field->name }},
+    @endif
 @endforeach
 		];
     }

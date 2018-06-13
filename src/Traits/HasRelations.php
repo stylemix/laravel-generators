@@ -2,17 +2,18 @@
 
 namespace Bpocallaghan\Generators\Traits;
 
-use Bpocallaghan\Generators\Components\RelationsBuilder;
+use Bpocallaghan\Generators\Models\SchemaItem;
 
 trait HasRelations
 {
     protected function getRelationsData()
     {
         $schema = $this->getSchema();
-        $meta = ['name' => $this->getArgumentNameOnly()];
 
         return [
-            'relations' => (new RelationsBuilder())->create($schema, $meta)
+            'relations' => $schema->filter(function (SchemaItem $field) {
+                return $field->isRelation();
+            })
         ];
     }
 }

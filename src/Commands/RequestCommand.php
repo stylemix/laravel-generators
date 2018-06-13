@@ -56,8 +56,6 @@ class RequestCommand extends GeneratorCommand
 
 		return array_merge(parent::getData(), [
 			'rules' => $this->getRules($schema),
-			// fields schema
-			'schema' => $schema,
 		]);
 	}
 
@@ -101,6 +99,8 @@ class RequestCommand extends GeneratorCommand
 				$rules[] = 'boolean';
 			} elseif ($type == 'enum' && count($field['arguments'])) {
 				$rules[] = 'in:' . join(',', $field['arguments']);
+			} elseif ($type == 'belongsto') {
+			    $field['name'] = $field['foreignKey'];
 			}
 
 			if (array_key_exists('unique', $field['options'])) {

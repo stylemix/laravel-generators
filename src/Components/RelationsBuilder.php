@@ -4,6 +4,7 @@ namespace Bpocallaghan\Generators\Components;
 
 
 use Bpocallaghan\Generators\Models\RelationItem;
+use Bpocallaghan\Generators\Models\SchemaItem;
 use Bpocallaghan\Generators\Traits\NameBuilders;
 use Illuminate\Console\DetectsApplicationNamespace;
 use Illuminate\Support\Collection;
@@ -18,55 +19,44 @@ class RelationsBuilder
     /**
      * Create the PHP syntax for the given schema.
      *
-     * @param  array $schema
+     * @param  Collection $schema
      * @param  array $meta
-     *
-     * @return array|Collection
      */
     public function create($schema, $meta)
     {
         $this->meta = $meta;
 
-        return collect($schema)
-            ->filter(function ($field) {
-                return in_array(strtolower($field['type']), ['hasone', 'hasmany', 'belongsto', 'belongstomany']);
+        $schema
+            ->filter(function (SchemaItem $field) {
+                return $field->isRelation();
             })
-            ->map(function ($field) {
-                return $this->buildRelation($field);
-            })
-            ->keyBy('name');
+            ->each(function (SchemaItem $field) {
+                $this->buildRelation($field);
+            });
     }
 
-
-    protected function buildRelation($relation)
+    protected function buildRelation(SchemaItem $field)
     {
-        $relation['type'] = strtr(strtolower($relation['type']), [
-            'hasone' => 'hasOne',
-            'hasmany' => 'hasMany',
-            'belongsto' => 'belongsTo',
-            'belongstomany' => 'belongsToMany',
-        ]);
+        $field['name'] = $name = str_replace('_id', '', $field['name']);
 
-        $relation['name'] = $name = str_replace('_id', '', $relation['name']);
-
-        $arguments = $relation['arguments'];
+        $arguments = $field['arguments'];
         $class     = array_shift($arguments);
         $class     = $class ?: $name;
 
-        switch ($relation['type']) {
+        switch ($field['type']) {
             case 'hasOne':
             case 'hasMany':
-                $relation['foreignKey'] = array_get($arguments, 0, $this->meta['name'] . '_id');
-                $relation['localKey']   = array_get($arguments, 1, 'id');
+                $field['foreignKey'] = array_get($arguments, 0, $this->meta['name'] . '_id');
+                $field['localKey']   = array_get($arguments, 1, 'id');
                 break;
             case 'belongsTo':
-                $relation['foreignKey'] = array_get($arguments, 0, $class . '_id');
-                $relation['localKey']   = array_get($arguments, 1, 'id');
+                $field['foreignKey'] = array_get($arguments, 0, $class . '_id');
+                $field['localKey']   = array_get($arguments, 1, 'id');
                 break;
             case 'belongsToMany':
-                $relation['pivotTable'] = array_get($arguments, 0, $this->getPivotTableName($class, $this->meta['name']));
-                $relation['foreignPivotKey'] = array_get($arguments, 1, $this->meta['name'] . '_id');
-                $relation['relatedPivotKey'] = array_get($arguments, 2, str_singular($class) . '_id');
+                $field['pivotTable'] = array_get($arguments, 0, $this->getPivotTableName($class, $this->meta['name']));
+                $field['foreignPivotKey'] = array_get($arguments, 1, $this->meta['name'] . '_id');
+                $field['relatedPivotKey'] = array_get($arguments, 2, str_singular($class) . '_id');
                 break;
         }
 
@@ -74,16 +64,13 @@ class RelationsBuilder
             return '\'' . $arg . '\'';
         }, $arguments);
 
-        $relation['class'] = $class = $this->resolveClass($class);
+        $field['relationClass'] = $class = $this->resolveClass($class);
 
         array_unshift($arguments, $class . '::class');
         $arguments = join(', ', $arguments);
 
-        $relation['code'] = "return \$this->{$relation['type']}({$arguments});";
-
-        return new RelationItem($relation);
+        $field['relationCode'] = "return \$this->{$field['type']}({$arguments});";
     }
-
 
     protected function resolveClass($class)
     {

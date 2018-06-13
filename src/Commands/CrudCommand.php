@@ -46,10 +46,6 @@ class CrudCommand extends GeneratorCommand
         $this->callSeed();
         $this->callMigrate();
 
-        if ($this->option('scout')) {
-            $this->callImport();
-        }
-
         $this->info('All Done!');
     }
 
@@ -74,7 +70,6 @@ class CrudCommand extends GeneratorCommand
         if ($this->confirm("Create a $name model?", 1)) {
             $this->callCommand('model', $name, [
                 '--schema' => $this->option('schema'),
-                '--relation' => $this->option('relation'),
             ]);
         }
     }
@@ -126,7 +121,6 @@ class CrudCommand extends GeneratorCommand
                     '--stub' => $key,
                     '--name' => $name,
                     '--schema' => $this->option('schema'),
-                    '--relation' => $this->option('relation'),
                 ]);
             }
         }
@@ -144,7 +138,9 @@ class CrudCommand extends GeneratorCommand
 
 			// if admin - update stub
 			if (!str_contains($name, 'admin.')) {
-				$this->callCommand('controller', $name);
+				$this->callCommand('controller', $name, [
+                    '--schema' => $this->option('schema'),
+                ]);
 			} else {
 				$this->callCommand('controller', $name, [
 					'--stub' => 'controller_admin',
@@ -164,7 +160,6 @@ class CrudCommand extends GeneratorCommand
             $this->callCommand('migration', $name, [
                 '--name' => date('Y_m_d_His') . '_' . $name,
                 '--schema' => $this->option('schema'),
-                '--relation' => $this->option('relation')
             ]);
         }
     }
@@ -188,17 +183,6 @@ class CrudCommand extends GeneratorCommand
     {
         if ($this->confirm('Migrate the database?', 1)) {
             $this->call('migrate');
-        }
-    }
-
-    /**
-     * Call the scout's import command
-     */
-    protected function callImport()
-    {
-        if ($this->confirm('Do you want to import your model to scout?', 1)) {
-            $model = $this->getModelName();
-            exec("php artisan scout:import 'App\{$model}'");
         }
     }
 
@@ -299,9 +283,6 @@ class CrudCommand extends GeneratorCommand
     {
         return array_merge(parent::getOptions(), [
             ['migration', null, InputOption::VALUE_OPTIONAL, 'Optional migration name', null],
-            ['relations', 'r', InputOption::VALUE_OPTIONAL, "Define resource relations.", null],
-            ['relation', null, InputOption::VALUE_OPTIONAL, "Deprecated", null],
-            ['scout', 'sc', InputOption::VALUE_OPTIONAL, 'Define whether use scout or not.', null],
             ['schema', 's', InputOption::VALUE_OPTIONAL, 'Optional schema to be attached to the migration', null],
         ]);
     }

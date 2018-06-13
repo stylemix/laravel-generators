@@ -29,7 +29,7 @@ class {{$class}} extends Model
 @foreach ($relations as $relation)
     public function {{ $relation->name }}()
     {
-        {!! $relation->code !!}
+        {!! $relation->relationCode !!}
     }
 
 @endforeach
