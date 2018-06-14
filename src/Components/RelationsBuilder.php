@@ -43,6 +43,8 @@ class RelationsBuilder
         $class     = array_shift($arguments);
         $class     = $class ?: $name;
 
+        $field['relationEntity'] = str_singular($class);
+
         switch ($field['type']) {
             case 'hasOne':
             case 'hasMany':
