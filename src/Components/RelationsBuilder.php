@@ -52,7 +52,7 @@ class RelationsBuilder
                 $field['localKey']   = array_get($arguments, 1, 'id');
                 break;
             case 'belongsTo':
-                $field['foreignKey'] = array_get($arguments, 0, $class . '_id');
+                $field['foreignKey'] = array_get($arguments, 0, $name . '_id');
                 $field['localKey']   = array_get($arguments, 1, 'id');
                 break;
             case 'belongsToMany':

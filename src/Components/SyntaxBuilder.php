@@ -184,7 +184,7 @@ class SyntaxBuilder
 		if (in_array(strtolower($type), ['hasone', 'hasmany', 'belongsto', 'belongstomany'])) {
 			switch (strtolower($type)) {
 			case 'belongsto':
-				$name = array_get($arguments, 1, $name . '_id');
+				$name = $field['foreignKey'];
 				$type = 'unsignedInteger';
 				$arguments = [];
 				break;
