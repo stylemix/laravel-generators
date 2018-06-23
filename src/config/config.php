@@ -65,7 +65,6 @@ return [
             'path' => './app/Http/Controllers/',
             'postfix' => 'Controller',
             'directory_namespace' => true,
-            'dump_autoload' => true,
             'repository_contract' => false,
         ],
         'seed' => [

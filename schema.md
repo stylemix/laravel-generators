@@ -128,3 +128,26 @@ $field->relatedPivotKey // "role_id"
 
 Only for `generate:model` variable `$relations` is available as [Laravel Collection](https://laravel.com/docs/5.6/collections).
 It contains schema fields only type of relations.
+
+
+### Defining new types
+
+```php
+// add an alias in app.php
+'StylemixGenerator' => Bpocallaghan\Generators\GeneratorFacade::class
+```
+
+```php
+// class responsible for new types
+class MediaItem extends SchemaItemAbstract implements SchemaItemInterface {
+    // implement a logic
+}
+```
+
+```php
+// in your service provider
+public function register()
+{
+    \StylemixGenerator::bindType(MediaItem::class, 'image', 'images');
+}
+```

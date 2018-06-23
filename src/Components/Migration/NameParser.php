@@ -1,6 +1,6 @@
 <?php
 
-namespace Bpocallaghan\Generators\Components;
+namespace Bpocallaghan\Generators\Components\Migration;
 
 class NameParser
 {

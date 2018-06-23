@@ -24,6 +24,8 @@ use Bpocallaghan\Generators\Commands\MiddlewareCommand;
 use Bpocallaghan\Generators\Commands\NotificationCommand;
 use Bpocallaghan\Generators\Commands\MigrationPivotCommand;
 use Bpocallaghan\Generators\Commands\EventGenerateCommand;
+use Bpocallaghan\Generators\Models\GeneralSchemaItem;
+use Bpocallaghan\Generators\Models\RelationSchemaItem;
 use Illuminate\Support\ServiceProvider;
 
 class GeneratorsServiceProvider extends ServiceProvider
@@ -50,6 +52,17 @@ class GeneratorsServiceProvider extends ServiceProvider
         // merge config
         $configPath = __DIR__ . '/config/config.php';
         $this->mergeConfigFrom($configPath, 'generators');
+
+        // Register container
+        $this->app->bind(Generator::class, function () {
+            $generator = new Generator();
+
+            $this->registerTypes($generator);
+
+            return $generator;
+        }, true);
+        
+        $this->app->alias(Generator::class, 'stylemix.generator');
 
         // register all the artisan commands
         $this->registerCommand(PublishCommand::class, 'publish');
@@ -82,6 +95,17 @@ class GeneratorsServiceProvider extends ServiceProvider
 
         $this->registerCommand(CrudCommand::class, 'crud');
         $this->registerCommand(FileCommand::class, 'file');
+    }
+
+    /**
+     * Register initial schema ite types
+     *
+     * @param Generator $generator
+     */
+    protected function registerTypes(Generator $generator)
+    {
+        $generator->bindType(GeneralSchemaItem::class, '*');
+        $generator->bindType(RelationSchemaItem::class, 'belongsTo', 'belongsToMany', 'hasOne', 'hasMany');
     }
 
     /**

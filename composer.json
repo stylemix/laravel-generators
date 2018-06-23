@@ -29,7 +29,10 @@
         "laravel": {
             "providers": [
                 "Bpocallaghan\\Generators\\GeneratorsServiceProvider"
-            ]
+            ],
+            "aliases": {
+                "StylemixGenerator": "Bpocallaghan\\Generators\\GeneratorFacade"
+            }
         }
     }
 }

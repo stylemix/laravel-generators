@@ -3,6 +3,7 @@
 namespace Bpocallaghan\Generators\Commands;
 
 use Bpocallaghan\Generators\Components\ResourceBuilder;
+use Bpocallaghan\Generators\Models\SchemaItemInterface;
 use Bpocallaghan\Generators\Traits\HasRelations;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -43,23 +44,32 @@ class ResourceCommand extends GeneratorCommand
         ], parent::getOptions());
     }
 
-    protected function getSchema()
-    {
-        $schema = parent::getSchema();
-        (new ResourceBuilder())->create($schema, [
-            'resourceClassNamespace' => $this->getResourceClassNamespace(),
-            'resourceClassPostfix' => $this->settings['postfix'],
-        ]);
-
-        return $schema;
-    }
-
     protected function getData()
 	{
 		return array_merge(parent::getData(), $this->getRelationsData(), [
 			// resource namespace
-			'resourceClassNamespace' => $this->getResourceClassNamespace(),
+			'values' => $this->getResourceValues(),
 		]);
 	}
+
+    /**
+     * Get API resource field from schema fields.
+     *
+     * @return array
+     */
+    protected function getResourceValues()
+    {
+        $values = [];
+
+        foreach ($this->getSchema() as $field) {
+            if (!($value = $field->getApiResourceValue())) {
+                continue;
+            }
+
+            $values[$field->name] = $value;
+        }
+
+        return $values;
+    }
 
 }

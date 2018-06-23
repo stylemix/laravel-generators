@@ -2,7 +2,7 @@
 
 namespace Bpocallaghan\Generators\Traits;
 
-use Bpocallaghan\Generators\Models\SchemaItem;
+use Bpocallaghan\Generators\Models\SchemaItemAbstract;
 
 trait HasRelations
 {
@@ -11,7 +11,7 @@ trait HasRelations
         $schema = $this->getSchema();
 
         return [
-            'relations' => $schema->filter(function (SchemaItem $field) {
+            'relations' => $schema->filter(function (SchemaItemAbstract $field) {
                 return $field->isRelation();
             })
         ];

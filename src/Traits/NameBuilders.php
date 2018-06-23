@@ -2,9 +2,11 @@
 
 namespace Bpocallaghan\Generators\Traits;
 
+use Illuminate\Console\DetectsApplicationNamespace;
 
 trait NameBuilders
 {
+    use DetectsApplicationNamespace;
 
 	/**
 	 * The resource argument
@@ -139,6 +141,19 @@ trait NameBuilders
 
 		return $namespace;
 	}
+
+    /**
+     * Get full namespace for resource class
+     * @return string
+     */
+    protected function getResourceClassNamespace()
+    {
+        // get path from settings
+        $namespace = $this->getAppNamespace() . config('generators.settings.resource.namespace') . '\\';
+        $namespace = rtrim(ltrim(str_replace('\\\\', '\\', $namespace), '\\'), '\\');
+
+        return $namespace;
+    }
 
 	/**
 	 * Get the path to the view file

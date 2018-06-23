@@ -1,8 +1,10 @@
 <?php
 
-namespace Bpocallaghan\Generators\Components;
+namespace Bpocallaghan\Generators\Components\Migration;
 
 use Bpocallaghan\Generators\Exceptions\GeneratorException;
+use Bpocallaghan\Generators\Models\SchemaItemInterface;
+use Bpocallaghan\Generators\Models\SchemaItemAbstract;
 use Illuminate\Support\Collection;
 
 class SyntaxBuilder
@@ -17,7 +19,7 @@ class SyntaxBuilder
     /**
      * Create the PHP syntax for the given schema.
      *
-     * @param  array $schema
+     * @param  Collection $schema
      * @param  array $meta
      *
      * @return array
@@ -33,7 +35,7 @@ class SyntaxBuilder
     /**
      * Create the schema for the "up" method.
      *
-     * @param  string $schema
+     * @param  Collection $schema
      * @param  array  $meta
      *
      * @return string
@@ -64,7 +66,7 @@ class SyntaxBuilder
     /**
      * Construct the syntax for a down field.
      *
-     * @param  array $schema
+     * @param  Collection $schema
      * @param  array $meta
      *
      * @return string
@@ -151,7 +153,7 @@ class SyntaxBuilder
      * @param  Collection  $schema
      * @param  string $direction
      *
-     * @return array
+     * @return string
      */
     private function constructSchema($schema, $direction = 'Add')
     {
@@ -159,60 +161,39 @@ class SyntaxBuilder
             return '';
         }
 
-        $fields = array_map(function ($field) use ($direction) {
-            $method = "{$direction}Column";
+        $fields = $schema
+            ->map(function (SchemaItemInterface $field) use ($direction) {
+                if (!($migration = $field->getMigrationData())) {
+                    return null;
+                }
 
-            return $this->$method($field);
-        }, $schema->all());
+                $method = "{$direction}Column";
 
-        return implode("\n" . str_repeat(' ', 12), array_filter($fields));
+                return $this->$method($migration);
+            });
+
+        return implode("\n" . str_repeat(' ', 12), $fields->filter()->all());
     }
 
     /**
      * Construct the syntax to add a column.
      *
-     * @param  array $field
+     * @param array $migration
      *
      * @return string
      */
-    private function addColumn($field)
+    private function addColumn($migration)
     {
-		$name = $field['name'];
-		$type = $field['type'];
-		$arguments = $field['arguments'];
-
-		if (in_array(strtolower($type), ['hasone', 'hasmany', 'belongsto', 'belongstomany'])) {
-			switch (strtolower($type)) {
-			case 'belongsto':
-				$name = $field['foreignKey'];
-				$type = 'unsignedInteger';
-				$arguments = [];
-				break;
-			default:
-				return null;
-			}
-	    }
-
-		$syntax = sprintf("\$table->%s('%s')", $type, $name);
+        $syntax = sprintf("\$table->%s('%s')", $migration['type'], $migration['name']);
 
         // If there are arguments for the schema type, like decimal('amount', 5, 2)
         // then we have to remember to work those in.
-        if ($arguments) {
+        if ($migration['arguments']) {
             $syntax = substr($syntax, 0, -1) . ', ';
-
-            switch ($field['type']) {
-			case 'enum':
-				$syntax .= '[\'' . implode('\', \'', $arguments) . '\'])';
-				break;
-			default:
-				$syntax .= implode(', ', $arguments) . ')';
-			}
+            $syntax .= implode(', ', $migration['arguments']) . ')';
         }
 
-        foreach ($field['options'] as $method => $value) {
-        	if (in_array($method, ['form', 'rules'])) {
-        		continue;
-			}
+        foreach ($migration['options'] as $method => $value) {
             $syntax .= sprintf("->%s(%s)", $method, $value === true ? '' : join(', ', $value));
         }
 
@@ -222,12 +203,12 @@ class SyntaxBuilder
     /**
      * Construct the syntax to drop a column.
      *
-     * @param  string $field
+     * @param  array $migration
      *
      * @return string
      */
-    private function dropColumn($field)
+    private function dropColumn($migration)
     {
-        return sprintf("\$table->dropColumn('%s');", $field['name']);
+        return sprintf("\$table->dropColumn('%s');", $migration['name']);
     }
 }

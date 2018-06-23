@@ -2,10 +2,8 @@
 
 namespace Bpocallaghan\Generators\Commands;
 
-use Bpocallaghan\Generators\Components\NameParser;
-use Bpocallaghan\Generators\Components\RelationsBuilder;
-use Bpocallaghan\Generators\Components\SchemaParser;
-use Bpocallaghan\Generators\Components\SyntaxBuilder;
+use Bpocallaghan\Generators\Components\Migration\NameParser;
+use Bpocallaghan\Generators\Components\Migration\SyntaxBuilder;
 use Bpocallaghan\Generators\Traits\HasRelations;
 use Symfony\Component\Console\Input\InputOption;
 

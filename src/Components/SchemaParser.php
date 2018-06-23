@@ -2,11 +2,15 @@
 
 namespace Bpocallaghan\Generators\Components;
 
-use Bpocallaghan\Generators\Models\SchemaItem;
+use Bpocallaghan\Generators\Generator;
 use Illuminate\Support\Collection;
 
 class SchemaParser
 {
+    /**
+     * @var array Useful meta information
+     */
+    protected $meta;
     /**
      * The parsed schema.
      *
@@ -15,15 +19,28 @@ class SchemaParser
     private $schema = [];
 
     /**
+     * @var Generator
+     */
+    private $generator;
+
+    public function __construct(Generator $generator)
+    {
+        $this->generator = $generator;
+    }
+
+    /**
      * Parse the command line migration schema.
      * Ex: name:string, age:integer:nullable
      *
      * @param  string $schema
+     * @param  array $meta
      *
      * @return array|Collection
      */
-    public function parse($schema)
+    public function parse($schema, $meta)
     {
+        $this->meta = $meta;
+
         $fields = $this->splitIntoFields($schema);
 
         foreach ($fields as $field) {
@@ -57,7 +74,9 @@ class SchemaParser
      */
     private function addField($field)
     {
-        $this->schema[] = new SchemaItem($field);
+        $field['meta'] = $this->meta;
+
+        $this->schema[] = $this->generator->makeSchemaItem($field);
 
         return $this;
     }

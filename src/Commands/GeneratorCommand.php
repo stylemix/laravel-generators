@@ -3,22 +3,21 @@
 namespace Bpocallaghan\Generators\Commands;
 
 use Bpocallaghan\Generators\Components\ExtraParser;
-use Bpocallaghan\Generators\Components\RelationsBuilder;
 use Bpocallaghan\Generators\Components\SchemaParser;
+use Bpocallaghan\Generators\Generator;
+use Bpocallaghan\Generators\Traits\ArgumentsOptions;
 use Bpocallaghan\Generators\Traits\NameBuilders;
-use Illuminate\Console\DetectsApplicationNamespace;
+use Bpocallaghan\Generators\Traits\Settings;
+use Illuminate\Console\GeneratorCommand as LaravelGeneratorCommand;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Composer;
-use Illuminate\Filesystem\Filesystem;
-use Bpocallaghan\Generators\Traits\Settings;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
-use Bpocallaghan\Generators\Traits\ArgumentsOptions;
-use Illuminate\Console\GeneratorCommand as LaravelGeneratorCommand;
+use Symfony\Component\Console\Input\InputOption;
 
 abstract class GeneratorCommand extends LaravelGeneratorCommand
 {
-    use ArgumentsOptions, Settings, DetectsApplicationNamespace, NameBuilders;
+    use ArgumentsOptions, Settings, NameBuilders;
 
     /**
      * @var Composer
@@ -47,11 +46,11 @@ abstract class GeneratorCommand extends LaravelGeneratorCommand
 	 */
     public function handle()
     {
-	    // setup
+        // setup
 	    $this->setSettings();
 	    $this->setResourceName(str_replace($this->settings['postfix'], '', $this->getArgumentNameOnly()));
 
-	    // check the path where to create and save file
+        // check the path where to create and save file
 	    $path = $this->getPath('');
 	    if ($this->files->exists($path) && $this->optionForce() === false) {
 		    $this->error(ucfirst($this->getType()) . ' already exists!');
@@ -75,7 +74,16 @@ abstract class GeneratorCommand extends LaravelGeneratorCommand
 	    }
     }
 
-	/**
+    protected function setResourceName($name)
+    {
+        $this->resource = $name;
+
+        // Register current resource to make it accessible for other components
+        app(Generator::class)->setCurrentResource($this->getResourceName());
+    }
+
+
+    /**
 	 * Get current generator type.
 	 * Override this method to define custom type
 	 *
@@ -380,26 +388,13 @@ abstract class GeneratorCommand extends LaravelGeneratorCommand
 	protected function getSchema()
 	{
         if ($this->hasOption('schema') && $schema = $this->optionSchema()) {
-            $schema = (new SchemaParser())->parse($schema);
-            (new RelationsBuilder())->create($schema, ['name' => $this->getArgumentNameOnly()]);
+            $schema = app(SchemaParser::class)
+                ->parse($schema, ['name' => $this->getArgumentNameOnly()]);
         } else {
             $schema = collect();
         }
 
         return $schema;
-	}
-
-	/**
-	 * Get full namespace for resource class
-	 * @return string
-	 */
-	protected function getResourceClassNamespace()
-	{
-		// get path from settings
-		$namespace = $this->getAppNamespace() . config('generators.settings.resource.namespace') . '\\';
-		$namespace = rtrim(ltrim(str_replace('\\\\', '\\', $namespace), '\\'), '\\');
-
-		return $namespace;
 	}
 
     /**
