@@ -1,9 +1,9 @@
 <?php
 
-namespace Bpocallaghan\Generators\Commands;
+namespace Stylemix\Generators\Commands;
 
 
-use Bpocallaghan\Generators\Traits\HasRelations;
+use Stylemix\Generators\Traits\HasRelations;
 use Symfony\Component\Console\Input\InputOption;
 
 

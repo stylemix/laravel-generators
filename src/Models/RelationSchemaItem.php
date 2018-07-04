@@ -1,6 +1,6 @@
 <?php
 
-namespace Bpocallaghan\Generators\Models;
+namespace Stylemix\Generators\Models;
 
 class RelationSchemaItem extends SchemaItemAbstract implements SchemaItemInterface
 {

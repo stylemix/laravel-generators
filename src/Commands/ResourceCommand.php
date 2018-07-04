@@ -1,10 +1,10 @@
 <?php
 
-namespace Bpocallaghan\Generators\Commands;
+namespace Stylemix\Generators\Commands;
 
-use Bpocallaghan\Generators\Components\ResourceBuilder;
-use Bpocallaghan\Generators\Models\SchemaItemInterface;
-use Bpocallaghan\Generators\Traits\HasRelations;
+use Stylemix\Generators\Components\ResourceBuilder;
+use Stylemix\Generators\Models\SchemaItemInterface;
+use Stylemix\Generators\Traits\HasRelations;
 use Symfony\Component\Console\Input\InputOption;
 
 class ResourceCommand extends GeneratorCommand

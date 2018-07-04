@@ -1,9 +1,9 @@
 <?php
 
-namespace Bpocallaghan\Generators;
+namespace Stylemix\Generators;
 
-use Bpocallaghan\Generators\Commands\GeneratorCommand;
-use Bpocallaghan\Generators\Models\SchemaItemAbstract;
+use Stylemix\Generators\Commands\GeneratorCommand;
+use Stylemix\Generators\Models\SchemaItemAbstract;
 use Illuminate\Container\Container;
 
 class Generator extends Container

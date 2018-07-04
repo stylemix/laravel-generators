@@ -1,6 +1,6 @@
 <?php
 
-namespace Bpocallaghan\Generators\Commands;
+namespace Stylemix\Generators\Commands;
 
 use Illuminate\Support\Str;
 use Illuminate\Console\Command;

@@ -1,31 +1,31 @@
 <?php
 
-namespace Bpocallaghan\Generators;
+namespace Stylemix\Generators;
 
-use Bpocallaghan\Generators\Commands\AssetCommand;
-use Bpocallaghan\Generators\Commands\JobCommand;
-use Bpocallaghan\Generators\Commands\FileCommand;
-use Bpocallaghan\Generators\Commands\RequestCommand;
-use Bpocallaghan\Generators\Commands\ResourceCommand;
-use Bpocallaghan\Generators\Commands\SeedCommand;
-use Bpocallaghan\Generators\Commands\ViewCommand;
-use Bpocallaghan\Generators\Commands\EventCommand;
-use Bpocallaghan\Generators\Commands\ModelCommand;
-use Bpocallaghan\Generators\Commands\TraitCommand;
-use Bpocallaghan\Generators\Commands\ConsoleCommand;
-use Bpocallaghan\Generators\Commands\PublishCommand;
-use Bpocallaghan\Generators\Commands\ContractCommand;
-use Bpocallaghan\Generators\Commands\ListenerCommand;
-use Bpocallaghan\Generators\Commands\CrudCommand;
-use Bpocallaghan\Generators\Commands\MigrationCommand;
-use Bpocallaghan\Generators\Commands\ControllerCommand;
-use Bpocallaghan\Generators\Commands\RepositoryCommand;
-use Bpocallaghan\Generators\Commands\MiddlewareCommand;
-use Bpocallaghan\Generators\Commands\NotificationCommand;
-use Bpocallaghan\Generators\Commands\MigrationPivotCommand;
-use Bpocallaghan\Generators\Commands\EventGenerateCommand;
-use Bpocallaghan\Generators\Models\GeneralSchemaItem;
-use Bpocallaghan\Generators\Models\RelationSchemaItem;
+use Stylemix\Generators\Commands\AssetCommand;
+use Stylemix\Generators\Commands\JobCommand;
+use Stylemix\Generators\Commands\FileCommand;
+use Stylemix\Generators\Commands\RequestCommand;
+use Stylemix\Generators\Commands\ResourceCommand;
+use Stylemix\Generators\Commands\SeedCommand;
+use Stylemix\Generators\Commands\ViewCommand;
+use Stylemix\Generators\Commands\EventCommand;
+use Stylemix\Generators\Commands\ModelCommand;
+use Stylemix\Generators\Commands\TraitCommand;
+use Stylemix\Generators\Commands\ConsoleCommand;
+use Stylemix\Generators\Commands\PublishCommand;
+use Stylemix\Generators\Commands\ContractCommand;
+use Stylemix\Generators\Commands\ListenerCommand;
+use Stylemix\Generators\Commands\CrudCommand;
+use Stylemix\Generators\Commands\MigrationCommand;
+use Stylemix\Generators\Commands\ControllerCommand;
+use Stylemix\Generators\Commands\RepositoryCommand;
+use Stylemix\Generators\Commands\MiddlewareCommand;
+use Stylemix\Generators\Commands\NotificationCommand;
+use Stylemix\Generators\Commands\MigrationPivotCommand;
+use Stylemix\Generators\Commands\EventGenerateCommand;
+use Stylemix\Generators\Models\GeneralSchemaItem;
+use Stylemix\Generators\Models\RelationSchemaItem;
 use Illuminate\Support\ServiceProvider;
 
 class GeneratorsServiceProvider extends ServiceProvider

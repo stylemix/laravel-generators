@@ -1,6 +1,6 @@
 <?php
 
-namespace Bpocallaghan\Generators;
+namespace Stylemix\Generators;
 
 
 use Illuminate\Support\Facades\Facade;

@@ -1,10 +1,10 @@
 <?php
 
-namespace Bpocallaghan\Generators\Commands;
+namespace Stylemix\Generators\Commands;
 
-use Bpocallaghan\Generators\Components\Migration\NameParser;
-use Bpocallaghan\Generators\Components\Migration\SyntaxBuilder;
-use Bpocallaghan\Generators\Traits\HasRelations;
+use Stylemix\Generators\Components\Migration\NameParser;
+use Stylemix\Generators\Components\Migration\SyntaxBuilder;
+use Stylemix\Generators\Traits\HasRelations;
 use Symfony\Component\Console\Input\InputOption;
 
 class MigrationCommand extends GeneratorCommand

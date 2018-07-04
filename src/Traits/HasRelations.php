@@ -1,8 +1,8 @@
 <?php
 
-namespace Bpocallaghan\Generators\Traits;
+namespace Stylemix\Generators\Traits;
 
-use Bpocallaghan\Generators\Models\SchemaItemAbstract;
+use Stylemix\Generators\Models\SchemaItemAbstract;
 
 trait HasRelations
 {

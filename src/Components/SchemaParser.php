@@ -1,8 +1,9 @@
 <?php
 
-namespace Bpocallaghan\Generators\Components;
+namespace Stylemix\Generators\Components;
 
-use Bpocallaghan\Generators\Generator;
+use Stylemix\Generators\Generator;
+use Stylemix\Generators\Models\Schema;
 use Illuminate\Support\Collection;
 
 class SchemaParser
@@ -62,7 +63,7 @@ class SchemaParser
             $this->addField($segments);
         }
 
-        return collect($this->schema)->keyBy('name');
+        return (new Schema($this->schema))->keyBy('name');
     }
 
     /**

@@ -12,8 +12,8 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "Ben-Piet O'Callaghan",
-            "email": "bpocallaghan@gmail.com"
+            "name": "Azamat Holmeer",
+            "email": "azamat@stylemix.net"
         }
     ],
     "require": {
@@ -21,17 +21,17 @@
     },
     "autoload": {
         "psr-4": {
-            "Bpocallaghan\\Generators\\": "src/"
+            "Stylemix\\Generators\\": "src/"
         }
     },
     "minimum-stability": "dev",
     "extra": {
         "laravel": {
             "providers": [
-                "Bpocallaghan\\Generators\\GeneratorsServiceProvider"
+                "Stylemix\\Generators\\GeneratorsServiceProvider"
             ],
             "aliases": {
-                "StylemixGenerator": "Bpocallaghan\\Generators\\GeneratorFacade"
+                "StylemixGenerator": "Stylemix\\Generators\\GeneratorFacade"
             }
         }
     }

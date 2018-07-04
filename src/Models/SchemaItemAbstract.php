@@ -1,9 +1,9 @@
 <?php
 
-namespace Bpocallaghan\Generators\Models;
+namespace Stylemix\Generators\Models;
 
-use Bpocallaghan\Generators\Generator;
-use Bpocallaghan\Generators\Traits\NameBuilders;
+use Stylemix\Generators\Generator;
+use Stylemix\Generators\Traits\NameBuilders;
 use Illuminate\Console\DetectsApplicationNamespace;
 use Illuminate\Support\Fluent;
 

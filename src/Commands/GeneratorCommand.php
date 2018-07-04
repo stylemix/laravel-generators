@@ -1,13 +1,13 @@
 <?php
 
-namespace Bpocallaghan\Generators\Commands;
+namespace Stylemix\Generators\Commands;
 
-use Bpocallaghan\Generators\Components\ExtraParser;
-use Bpocallaghan\Generators\Components\SchemaParser;
-use Bpocallaghan\Generators\Generator;
-use Bpocallaghan\Generators\Traits\ArgumentsOptions;
-use Bpocallaghan\Generators\Traits\NameBuilders;
-use Bpocallaghan\Generators\Traits\Settings;
+use Stylemix\Generators\Components\ExtraParser;
+use Stylemix\Generators\Components\SchemaParser;
+use Stylemix\Generators\Generator;
+use Stylemix\Generators\Traits\ArgumentsOptions;
+use Stylemix\Generators\Traits\NameBuilders;
+use Stylemix\Generators\Traits\Settings;
 use Illuminate\Console\GeneratorCommand as LaravelGeneratorCommand;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Bpocallaghan\Generators\Commands;
+namespace Stylemix\Generators\Commands;
 
 class ViewCommand extends GeneratorCommand
 {

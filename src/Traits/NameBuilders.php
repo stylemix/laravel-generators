@@ -1,6 +1,6 @@
 <?php
 
-namespace Bpocallaghan\Generators\Traits;
+namespace Stylemix\Generators\Traits;
 
 use Illuminate\Console\DetectsApplicationNamespace;
 

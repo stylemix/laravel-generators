@@ -1,6 +1,6 @@
 <?php
 
-namespace Bpocallaghan\Generators\Commands;
+namespace Stylemix\Generators\Commands;
 
 use File;
 use Illuminate\Console\GeneratorCommand;

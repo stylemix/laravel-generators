@@ -1,10 +1,10 @@
 <?php
 
-namespace Bpocallaghan\Generators\Components\Migration;
+namespace Stylemix\Generators\Components\Migration;
 
-use Bpocallaghan\Generators\Exceptions\GeneratorException;
-use Bpocallaghan\Generators\Models\SchemaItemInterface;
-use Bpocallaghan\Generators\Models\SchemaItemAbstract;
+use Stylemix\Generators\Exceptions\GeneratorException;
+use Stylemix\Generators\Models\SchemaItemInterface;
+use Stylemix\Generators\Models\SchemaItemAbstract;
 use Illuminate\Support\Collection;
 
 class SyntaxBuilder

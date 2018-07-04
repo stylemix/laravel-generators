@@ -75,8 +75,8 @@ To customize the name of the pivot table and column names pass additional argume
 
 #### For stubs
 
-Use `$schema` variable in stubs as [Laravel Collection](https://laravel.com/docs/5.6/collections).
-Each item is instance of SchemaItem class.
+The `$schema` object is available in stubs which contains collection of schema items. It is instance of `Stylemix\Generators\Schema` class which extends [Laravel Collection](https://laravel.com/docs/5.6/collections).
+Each item is instance of `Stylemix\Generators\SchemaItem` class.
 
 For command:
 ```
@@ -129,12 +129,42 @@ $field->relatedPivotKey // "role_id"
 Only for `generate:model` variable `$relations` is available as [Laravel Collection](https://laravel.com/docs/5.6/collections).
 It contains schema fields only type of relations.
 
+### Helper methods
+
+* `$schema->hasTypes(...$types)` - returns if schema contains fields any of given types
+* `$schema->hasDateTypes()` - returns if schema contains date fields
+
+
+#### Extending schema collection class with own helpers
+In AppServiceProvider.php or any other provider class:
+```php
+use Stylemix\Generators\Models\Schema;
+
+//...
+
+    public function register()
+    {
+        Schema::macro('hasMediaFields', function () {
+            return $this->hasTypes('image', 'images');
+        });
+    }
+
+```
+This will register additional method named `hasMediaFields()` available in $schema variable, and it can used in stubs:
+
+```blade
+@if ($schema->hasMediaFields())
+// code for case when you have fields type of 'image' and 'images'
+@endif
+
+```
+
 
 ### Defining new types
 
 ```php
 // add an alias in app.php
-'StylemixGenerator' => Bpocallaghan\Generators\GeneratorFacade::class
+'StylemixGenerator' => Stylemix\Generators\GeneratorFacade::class
 ```
 
 ```php

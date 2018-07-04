@@ -1,9 +1,9 @@
 <?php
 
-namespace Bpocallaghan\Generators\Components;
+namespace Stylemix\Generators\Components;
 
 
-use Bpocallaghan\Generators\Models\ExtraItem;
+use Stylemix\Generators\Models\ExtraItem;
 use Illuminate\Support\Collection;
 
 class ExtraParser

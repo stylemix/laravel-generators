@@ -69,7 +69,7 @@ You'll only want to use these generators for local development, add the provider
 public function register()
 {
     if ($this->app->environment() == 'local') {
-        $this->app->register(\Bpocallaghan\Generators\GeneratorsServiceProvider::class);
+        $this->app->register(\Stylemix\Generators\GeneratorsServiceProvider::class);
     }
 }
 ```
