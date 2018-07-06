@@ -8,7 +8,7 @@ class GeneralSchemaItem extends SchemaItemAbstract implements SchemaItemInterfac
     /**
      * Initialize properties
      */
-    protected function init(): void
+    protected function init()
     {
         $converted = [
             'tinyIncrements',
@@ -113,7 +113,7 @@ class GeneralSchemaItem extends SchemaItemAbstract implements SchemaItemInterfac
             $rules[] = 'in:' . join(',', $this->arguments);
         }
 
-        return $rules;
+        return [$this->name => join('|', $rules)];
     }
 
     /**

@@ -90,7 +90,7 @@ class RelationSchemaItem extends SchemaItemAbstract implements SchemaItemInterfa
             $rules[] = 'integer';
         }
 
-        return $rules;
+        return [$this->foreignKey => join('|', $rules)];
     }
 
     protected function resolveClass($class)

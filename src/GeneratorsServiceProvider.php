@@ -5,6 +5,7 @@ namespace Stylemix\Generators;
 use Stylemix\Generators\Commands\AssetCommand;
 use Stylemix\Generators\Commands\JobCommand;
 use Stylemix\Generators\Commands\FileCommand;
+use Stylemix\Generators\Commands\PolicyCommand;
 use Stylemix\Generators\Commands\RequestCommand;
 use Stylemix\Generators\Commands\ResourceCommand;
 use Stylemix\Generators\Commands\SeedCommand;
@@ -61,7 +62,7 @@ class GeneratorsServiceProvider extends ServiceProvider
 
             return $generator;
         }, true);
-        
+
         $this->app->alias(Generator::class, 'stylemix.generator');
 
         // register all the artisan commands
@@ -71,6 +72,7 @@ class GeneratorsServiceProvider extends ServiceProvider
         $this->registerCommand(ViewCommand::class, 'view');
         $this->registerCommand(RequestCommand::class, 'request');
         $this->registerCommand(ResourceCommand::class, 'resource');
+        $this->registerCommand(PolicyCommand::class, 'policy');
         $this->registerCommand(ControllerCommand::class, 'controller');
         $this->registerCommand(AssetCommand::class, 'asset');
 

@@ -124,16 +124,6 @@ class MigrationCommand extends GeneratorCommand
     }
 
     /**
-     * Get the stub file for the generator.
-     *
-     * @return string
-     */
-    protected function getStub()
-    {
-        return config('generators.' . strtolower($this->type) . ($this->input->hasOption('plain') && $this->option('plain') ? '_plain' : '') . '_stub');
-    }
-
-    /**
      * Get the console command options.
      *
      * @return array

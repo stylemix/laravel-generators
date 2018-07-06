@@ -48,15 +48,18 @@ class ControllerCommand extends GeneratorCommand
 		}
 
 		$name = $this->argumentName();
-		$stub = $this->files->get($stub);
-		$stub = str_replace('{{route}}', str_replace('_', '-', $this->getCollectionName($name)), $stub);
+		$engine = $this->view->getEngineFromPath($stub);
+		view()->addNamespace('stubs', dirname($stub));
 
-		$postfix    = config('generators.settings.controller.postfix');
-		$controller = ucwords(camel_case(str_replace($postfix, '', str_plural($name)))) . $postfix;
-		$stub       = str_replace('{{controller}}', $controller, $stub);
+		$postfix = config('generators.settings.controller.postfix');
+
+		$line = $engine->get($stub, ['__env' => view()] + $this->getData() + [
+			'route' => str_replace('_', '-', $this->getCollectionName($name)),
+			'controller' => ucwords(camel_case(str_replace($postfix, '', str_plural($name)))) . $postfix,
+		]);
 
 		$path = '/routes/api.php';
-		if (file_put_contents(base_path() . $path, PHP_EOL . $stub, FILE_APPEND)) {
+		if (file_put_contents(base_path() . $path, PHP_EOL . $line, FILE_APPEND)) {
 			$this->info('Route registered successfully.');
 			$this->info('- .' . $path);
 		}

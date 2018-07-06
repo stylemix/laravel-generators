@@ -72,7 +72,7 @@ class RequestCommand extends GeneratorCommand
                 continue;
             }
 
-            $result[$field->name] = join('|', $rules);
+            $result = array_merge($result, $rules);
         }
 
         return $result;
