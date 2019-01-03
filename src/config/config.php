@@ -51,6 +51,10 @@ return [
             'namespace' => '',
             'path' => './app/'
         ],
+        'factory' => [
+            'namespace' => '',
+            'path' => './database/factories/'
+        ],
         'resource' => [
             'namespace' => '\Http\Resources',
             'path' => './app/Http/Resources/'
@@ -70,7 +74,6 @@ return [
             'path' => './app/Http/Controllers/',
             'postfix' => 'Controller',
             'directory_namespace' => true,
-            'repository_contract' => false,
         ],
         'seed' => [
             'path' => './database/seeds/',
@@ -112,16 +115,9 @@ return [
             'namespace' => '\Http\Middleware',
             'path' => './app/Http/Middleware/'
         ],
-        'repository' => [
-            'directory_namespace' => true,
-            'postfix' => 'Repository',
-            'namespace' => '\Repositories',
-            'path' => './app/Repositories/'
-        ],
         'contract' => [
             'directory_namespace' => true,
             'namespace' => '\Contracts',
-            'postfix' => 'Repository',
             'path' => './app/Contracts/',
         ],
     ],
@@ -180,9 +176,9 @@ return [
 	'controller_stub' => base_path() . '/vendor/stylemix/laravel-generators/resources/stubs/controller.blade.php',
 	'controller_plain_stub' => base_path() . '/vendor/stylemix/laravel-generators/resources/stubs/controller.plain.stub',
 	'controller_admin_stub' => base_path() . '/vendor/stylemix/laravel-generators/resources/stubs/controller_admin.stub',
-	'controller_repository_stub' => base_path() . '/vendor/stylemix/laravel-generators/resources/stubs/controller_repository.stub',
 	'pivot_stub' => base_path() . '/vendor/stylemix/laravel-generators/resources/stubs/pivot.stub',
-	'seed_stub' => base_path() . '/vendor/stylemix/laravel-generators/resources/stubs/seed.stub',
+	'factory_stub' => base_path() . '/vendor/stylemix/laravel-generators/resources/stubs/factory.blade.php',
+	'seed_stub' => base_path() . '/vendor/stylemix/laravel-generators/resources/stubs/seed.blade.php',
 	'seed_plain_stub' => base_path() . '/vendor/stylemix/laravel-generators/resources/stubs/seed.plain.stub',
 	'view_stub' => base_path() . '/vendor/stylemix/laravel-generators/resources/stubs/view.stub',
 	'view_index_stub' => base_path() . '/vendor/stylemix/laravel-generators/resources/stubs/view.index.stub',
@@ -206,6 +202,5 @@ return [
 	'job_stub' => base_path() . '/vendor/stylemix/laravel-generators/resources/stubs/job.stub',
 	'console_stub' => base_path() . '/vendor/stylemix/laravel-generators/resources/stubs/console.stub',
 	'middleware_stub' => base_path() . '/vendor/stylemix/laravel-generators/resources/stubs/middleware.stub',
-	'repository_stub' => base_path() . '/vendor/stylemix/laravel-generators/resources/stubs/repository.stub',
 	'contract_stub' => base_path() . '/vendor/stylemix/laravel-generators/resources/stubs/contract.stub',
 ];

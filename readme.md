@@ -11,11 +11,11 @@ php artisan generate:view
 php artisan generate:controller
 php artisan generate:migration
 php artisan generate:migration:pivot
+php artisan generate:factory
 php artisan generate:seed
 php artisan generate:resource
 php artisan generate:asset
 php artisan generate:crud
-php artisan generate:repository
 php artisan generate:contract
 php artisan generate:notification
 php artisan generate:event
@@ -277,31 +277,3 @@ Relation definition:
 ```
 <resource>:<relation type>:foreign(<key>):input(<input type>):as(<attribute>)
 ```
-
-## Shortcuts
-
-```
-art=php artisan
-model=php artisan generate:model
-view=php artisan generate:view
-view:index=php artisan generate:view:index
-view:create_edit=php artisan generate:view:create_edit
-view:show=php artisan generate:view:show
-controller=php artisan generate:controller
-migration=php artisan generate:migration
-migration:pivot=php artisan generate:migration:pivot
-seed=php artisan generate:seed
-resource=php artisan generate:resource
-```
-
-## Thank you
-
-- Thank you [Taylor Ottwell](https://github.com/taylorotwell) for [Laravel](http://laravel.com/).
-- Thank you [Jeffrey Way](https://github.com/JeffreyWay) for the awesome resources at [Laracasts](https://laracasts.com/).
-
-## My other Packages
-
-- [Notify](https://github.com/bpocallaghan/notify) Laravel 5 Flash Notifications with icons and animations and with a timeout
-- [Alert](https://github.com/bpocallaghan/alert) A helper package to flash a bootstrap alert to the browser via a Facade or a helper function.
-- [Impersonate User](https://github.com/bpocallaghan/impersonate) This allows you to authenticate as any of your customers.
-- [Sluggable](https://github.com/bpocallaghan/sluggable) Provides a HasSlug trait that will generate a unique slug when saving your Laravel Eloquent model.

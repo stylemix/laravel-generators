@@ -3,6 +3,7 @@
 namespace Stylemix\Generators;
 
 use Stylemix\Generators\Commands\AssetCommand;
+use Stylemix\Generators\Commands\FactoryCommand;
 use Stylemix\Generators\Commands\JobCommand;
 use Stylemix\Generators\Commands\FileCommand;
 use Stylemix\Generators\Commands\PolicyCommand;
@@ -20,7 +21,6 @@ use Stylemix\Generators\Commands\ListenerCommand;
 use Stylemix\Generators\Commands\CrudCommand;
 use Stylemix\Generators\Commands\MigrationCommand;
 use Stylemix\Generators\Commands\ControllerCommand;
-use Stylemix\Generators\Commands\RepositoryCommand;
 use Stylemix\Generators\Commands\MiddlewareCommand;
 use Stylemix\Generators\Commands\NotificationCommand;
 use Stylemix\Generators\Commands\MigrationPivotCommand;
@@ -31,7 +31,7 @@ use Illuminate\Support\ServiceProvider;
 
 class GeneratorsServiceProvider extends ServiceProvider
 {
-    private $commandPath = 'command.bpocallaghan.';
+    private $commandPath = 'stylemix.generators.';
 
     /**
      * Bootstrap the application events.
@@ -78,6 +78,7 @@ class GeneratorsServiceProvider extends ServiceProvider
 
         $this->registerCommand(MigrationCommand::class, 'migration');
         $this->registerCommand(MigrationPivotCommand::class, 'migrate.pivot');
+        $this->registerCommand(FactoryCommand::class, 'factory');
         $this->registerCommand(SeedCommand::class, 'seed');
 
         $this->registerCommand(NotificationCommand::class, 'notification');
@@ -87,7 +88,6 @@ class GeneratorsServiceProvider extends ServiceProvider
         $this->registerCommand(EventGenerateCommand::class, 'event.generate');
 
         $this->registerCommand(TraitCommand::class, 'trait');
-        $this->registerCommand(RepositoryCommand::class, 'repository');
         $this->registerCommand(ContractCommand::class, 'contract');
 
         $this->registerCommand(JobCommand::class, 'job');
