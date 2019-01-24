@@ -51,8 +51,8 @@ class GeneratorsServiceProvider extends ServiceProvider
     public function register()
     {
         // merge config
-        $configPath = __DIR__ . '/config/config.php';
-        $this->mergeConfigFrom($configPath, 'generators');
+		$this->mergeConfigFrom(__DIR__ . '/../config/generators.php', 'generators');
+		$this->mergeConfigFrom(__DIR__ . '/../config/generator_stubs.php', 'generator_stubs');
 
         // Register container
         $this->app->bind(Generator::class, function () {

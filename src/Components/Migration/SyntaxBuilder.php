@@ -134,7 +134,7 @@ class SyntaxBuilder
      */
     private function getCreateSchemaWrapper()
     {
-        return file_get_contents(config('generators.schema_create_stub'));
+        return file_get_contents(config('generator_stubs.schema_create_stub'));
     }
 
     /**
@@ -144,7 +144,7 @@ class SyntaxBuilder
      */
     private function getChangeSchemaWrapper()
     {
-        return file_get_contents(config('generators.schema_change_stub'));
+        return file_get_contents(config('generator_stubs.schema_change_stub'));
     }
 
     /**

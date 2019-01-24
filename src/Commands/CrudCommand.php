@@ -247,7 +247,7 @@ class CrudCommand extends GeneratorCommand
      */
     private function getResourceControllerName()
     {
-        return $this->getControllerName(str_plural($this->resource)) . config('generators.settings.controller.postfix');
+        return $this->getControllerName(str_plural($this->resource)) . config('generators.controller.postfix');
     }
 
     /**

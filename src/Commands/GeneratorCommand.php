@@ -407,7 +407,7 @@ abstract class GeneratorCommand extends LaravelGeneratorCommand
         $key = $this->getOptionStubKey();
 
         // get the stub path
-        $stub = config('generators.' . $key);
+        $stub = config('generator_stubs.' . $key);
 
         if (is_null($stub)) {
             $this->error('The stub does not exist in the config file - "' . $key . '"');

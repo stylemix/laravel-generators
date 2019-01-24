@@ -17,29 +17,17 @@ trait Settings
     public function setSettings()
     {
         $type = $this->getType();
-        $options = config('generators.settings');
+        $options = config('generators', []);
 
-        $found = false;
-        // loop through the settings and find the type key
-        foreach ($options as $key => $settings) {
-            if ($type == $key) {
-                $found = true;
-                break;
-            }
-        }
-
-        if ($found === false) {
+        if (!array_key_exists($type, $options)) {
             $this->error('Oops!, no settings key by the type name provided');
             exit;
         }
 
+        $settings = $options[$type];
+
         // set the default keys and values if they do not exist
-        $defaults = config('generators.defaults');
-        foreach ($defaults as $key => $value) {
-            if (!isset($settings[$key])) {
-                $settings[$key] = $defaults[$key];
-            }
-        }
+		$settings += config('generators.defaults');
 
         $this->settings = $settings;
     }

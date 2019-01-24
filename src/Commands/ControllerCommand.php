@@ -40,7 +40,7 @@ class ControllerCommand extends GeneratorCommand
 		}
 
 		// get the stub path
-		$stub = config('generators.controller_route_stub');
+		$stub = config('generator_stubs.controller_route_stub');
 
 		if (is_null($stub)) {
 			$this->error('The stub does not exist in the config file - "controller_route_stub"');
@@ -51,7 +51,7 @@ class ControllerCommand extends GeneratorCommand
 		$engine = $this->view->getEngineFromPath($stub);
 		view()->addNamespace('stubs', dirname($stub));
 
-		$postfix = config('generators.settings.controller.postfix');
+		$postfix = config('generators.controller.postfix');
 
 		$line = $engine->get($stub, ['__env' => view()] + $this->getData() + [
 			'route' => str_replace('_', '-', $this->getCollectionName($name)),

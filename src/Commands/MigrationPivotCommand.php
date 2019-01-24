@@ -190,7 +190,7 @@ class MigrationPivotCommand extends GeneratorCommand
      */
     protected function getStub()
     {
-        return config('generators.' . strtolower($this->type) . '_stub');
+        return config('generator_stubs.' . strtolower($this->type) . '_stub');
     }
 
     /**

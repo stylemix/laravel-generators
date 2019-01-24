@@ -117,7 +117,7 @@ trait NameBuilders
 
 		$name = str_singular(ucwords(camel_case(class_basename($name))));
 
-		return $name . config('generators.settings.contract.postfix');
+		return $name . config('generators.contract.postfix');
 	}
 
 	/**
@@ -128,7 +128,7 @@ trait NameBuilders
 	protected function getContractNamespace($withApp = true)
 	{
 		// get path from settings
-		$path = config('generators.settings.contract.namespace') . '\\';
+		$path = config('generators.contract.namespace') . '\\';
 
 		// dont add the default namespace if specified not to in config
 		$path .= str_replace('/', '\\', $this->getArgumentPath());
@@ -149,7 +149,7 @@ trait NameBuilders
     protected function getResourceClassNamespace()
     {
         // get path from settings
-        $namespace = $this->getAppNamespace() . config('generators.settings.resource.namespace') . '\\';
+        $namespace = $this->getAppNamespace() . config('generators.resource.namespace') . '\\';
         $namespace = rtrim(ltrim(str_replace('\\\\', '\\', $namespace), '\\'), '\\');
 
         return $namespace;
