@@ -1,4 +1,3 @@
 $table->increments('id');
             {{schema_up}}
             $table->timestamps();
-            $table->softDeletes();

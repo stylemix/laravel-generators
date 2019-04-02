@@ -78,12 +78,19 @@ class ModelCommand extends GeneratorCommand
         return array_merge([
             ['migration', 'm', InputOption::VALUE_NONE, 'Create a new migration file as well.'],
             ['schema', 's', InputOption::VALUE_OPTIONAL, 'Optional schema to be attached to the migration', null],
-        ], parent::getOptions());
+			['soft-deletes', null, InputOption::VALUE_NONE, 'Include soft deletion trait'],
+		], parent::getOptions());
     }
 
 	protected function getData()
 	{
-		return array_merge(parent::getData(), $this->getRelationsData());
+		return array_merge(
+			parent::getData(),
+			$this->getRelationsData(),
+			[
+				'softDeletes' => $this->option('soft-deletes'),
+			]
+		);
 	}
 
 }

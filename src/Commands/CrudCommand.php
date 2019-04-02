@@ -2,7 +2,6 @@
 
 namespace Stylemix\Generators\Commands;
 
-use Artisan;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 
@@ -38,12 +37,15 @@ class CrudCommand extends GeneratorCommand
         $this->settings = config('generators.defaults');
 
         $this->callModel();
+        $this->callFactory();
+        $this->callFormResource();
         $this->callRequest();
+		$this->callPolicy();
         $this->callResource();
-        $this->callAssets();
-        $this->callController();
-        $this->callMigration();
-        $this->callSeed();
+		$this->callController();
+		$this->callAdmin();
+		$this->callMigration();
+        $this->callSeeder();
         $this->callMigrate();
 
         $this->info('All Done!');
@@ -52,7 +54,7 @@ class CrudCommand extends GeneratorCommand
     /**
      * Call the generate:model command
      */
-    private function callModel()
+    protected function callModel()
     {
         $name = $this->getModelName();
 
@@ -67,39 +69,69 @@ class CrudCommand extends GeneratorCommand
             }
         }
 
-        if ($this->confirm("Create a $name model?", 1)) {
+        if ($this->confirmOptional("Create a $name model?", 1)) {
             $this->callCommand('model', $name, [
                 '--schema' => $this->option('schema'),
+                '--soft-deletes' => $this->option('soft-deletes'),
             ]);
         }
     }
 
-    /**
-     * Call the generate:resource command
-     */
-    private function callRequest()
-    {
-        $stubs = config('generators.requests');
+	/**
+	 * Call the generate:factory command
+	 */
+	protected function callFactory()
+	{
+		if ($this->confirmOptional('Create a model factory?', 1)) {
+			$this->callCommand('factory', $this->getResourceName(), [
+				'--schema' => $this->option('schema'),
+			]);
+		}
+	}
 
-        if ($this->confirm('Create a form validator requests?', 1)) {
-            foreach ($stubs as $stub => $type) {
-                $this->callCommand('request', $type . $this->getModelName(), [
-                    '--resource' => $this->getResourceName(),
-                    '--schema' => $this->option('schema'),
-                    '--stub' => $stub,
-                ]);
-            }
+	protected function callFormResource()
+	{
+		$name = $this->getModelName();
+
+		if ($this->confirmOptional("Create a $name form resource class?", 1)) {
+			$this->callCommand('form', $name . 'Form', [
+				'--schema' => $this->option('schema'),
+				'--without-request' => 1,
+			]);
+		}
+	}
+
+    /**
+     * Call the generate:request command
+     */
+    protected function callRequest()
+    {
+		if ($this->confirmOptional('Create a form validator request?', 1)) {
+			$this->callCommand('request', $this->getModelName() . 'Request', [
+				'--resource' => $this->getResourceName(),
+				'--schema' => $this->option('schema'),
+				'--stub' => 'form_request',
+			]);
         }
     }
 
+	protected function callPolicy()
+	{
+		if ($this->confirmOptional("Create a policy for $this->resource resource?", 1)) {
+			$name = $this->getModelName() . config('generators.settings.policy.postfix');
+
+			$this->callCommand('policy', $name);
+		}
+	}
+
     /**
      * Call the generate:resource command
      */
-    private function callResource()
+    protected function callResource()
     {
         $name = $this->getModelName();
 
-        if ($this->confirm("Create a $name API resource class?", 1)) {
+        if ($this->confirmOptional("Create a $name API resource class?", 1)) {
             $this->callCommand('resource', $name, [
                 '--schema' => $this->option('schema'),
             ]);
@@ -107,71 +139,57 @@ class CrudCommand extends GeneratorCommand
     }
 
     /**
-     * Generate the resource views
-     */
-    private function callAssets()
-    {
-        if ($this->confirm("Create crud assets for the $this->resource resource?", 1)) {
-            $views = config('generators.resource_assets');
-            $resource = $this->argument('resource');
-            $resource = str_replace('.', '/', $resource);
-
-            foreach ($views as $key => $name) {
-                $this->callCommand('asset', $this->getViewPath($resource), [
-                    '--stub' => $key,
-                    '--name' => $name,
-                    '--schema' => $this->option('schema'),
-                ]);
-            }
-        }
-    }
-
-    /**
      * Generate the resource controller
      */
-    private function callController()
+    protected function callController()
     {
         $name = $this->getResourceControllerName();
 
-        if ($this->confirm("Create a controller ($name) for the $this->resource resource?", 1)) {
+        if ($this->confirmOptional("Create a controller ($name) for the $this->resource resource?", 1)) {
             $name = $this->getCollectionName();
 
-			// if admin - update stub
-			if (!str_contains($name, 'admin.')) {
-				$this->callCommand('controller', $name, [
-                    '--schema' => $this->option('schema'),
-                ]);
-			} else {
-				$this->callCommand('controller', $name, [
-					'--stub' => 'controller_admin',
-				]);
-			}
+			$this->callCommand('controller', $name, [
+				'--schema' => $this->option('schema'),
+			]);
 		}
     }
+
+	/**
+	 * Generate resource admin assets
+	 */
+	protected function callAdmin()
+	{
+		if ($this->confirmOptional("Create admin assets for the $this->resource resource?", 1)) {
+			$this->callCommand('admin', $this->getCollectionName(), [
+				'--schema' => $this->option('schema'),
+			]);
+		}
+	}
 
     /**
      * Call the generate:migration command
      */
-    private function callMigration()
+    protected function callMigration()
     {
         $name = $this->getMigrationName($this->option('migration'));
 
-        if ($this->confirm("Create a migration ($name) for the $this->resource resource?", 1)) {
+        if ($this->confirmOptional("Create a migration ($name) for the $this->resource resource?", 1)) {
             $this->callCommand('migration', $name, [
                 '--name' => date('Y_m_d_His') . '_' . $name,
                 '--schema' => $this->option('schema'),
-            ]);
+				'--soft-deletes' => $this->option('soft-deletes'),
+			]);
         }
     }
 
     /**
      * Call the generate:seed command
      */
-    private function callSeed()
+    protected function callSeeder()
     {
         $name = $this->getSeedName() . 'TableSeeder';
 
-        if ($this->confirm("Create a seed ($name) for the $this->resource resource?", 1)) {
+        if ($this->confirmOptional("Create a seed ($name) for the $this->resource resource?", 1)) {
             $this->callCommand('seed', $name);
         }
     }
@@ -181,7 +199,7 @@ class CrudCommand extends GeneratorCommand
      */
     protected function callMigrate()
     {
-        if ($this->confirm('Migrate the database?', 1)) {
+        if ($this->confirm('Migrate the database?', false)) {
             $this->call('migrate');
         }
     }
@@ -191,7 +209,7 @@ class CrudCommand extends GeneratorCommand
      * @param       $name
      * @param array $options
      */
-    private function callCommand($command, $name, $options = [])
+    protected function callCommand($command, $name, $options = [])
     {
         $options = array_merge($options, [
             'name' => $name,
@@ -208,7 +226,7 @@ class CrudCommand extends GeneratorCommand
      *
      * @return array|mixed|string
      */
-    private function getArgumentResource()
+    protected function getArgumentResource()
     {
         $name = $this->argument('resource');
         if (str_contains($name, '/')) {
@@ -230,7 +248,7 @@ class CrudCommand extends GeneratorCommand
      *
      * @return string
      */
-    private function getResourceOnly()
+    protected function getResourceOnly()
     {
         $name = $this->getArgumentResource();
         if (!str_contains($name, '.')) {
@@ -245,7 +263,7 @@ class CrudCommand extends GeneratorCommand
      *
      * @return string
      */
-    private function getResourceControllerName()
+    protected function getResourceControllerName()
     {
         return $this->getControllerName(str_plural($this->resource)) . config('generators.controller.postfix');
     }
@@ -257,7 +275,7 @@ class CrudCommand extends GeneratorCommand
      *
      * @return string
      */
-    private function getMigrationName($name = null)
+    protected function getMigrationName($name = null)
     {
         return 'create_' . str_plural($this->getResourceName($name)) . '_table';
     }
@@ -284,6 +302,7 @@ class CrudCommand extends GeneratorCommand
         return array_merge(parent::getOptions(), [
             ['migration', null, InputOption::VALUE_OPTIONAL, 'Optional migration name', null],
             ['schema', 's', InputOption::VALUE_OPTIONAL, 'Optional schema to be attached to the migration', null],
-        ]);
+			['soft-deletes', null, InputOption::VALUE_NONE, 'Include soft deletion trait'],
+		]);
     }
 }

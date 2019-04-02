@@ -133,6 +133,7 @@ class MigrationCommand extends GeneratorCommand
         return array_merge([
             ['model', 'm', InputOption::VALUE_OPTIONAL, 'Want a model for this table?', false],
             ['schema', 's', InputOption::VALUE_OPTIONAL, 'Optional schema to be attached to the migration', null],
+			['soft-deletes', null, InputOption::VALUE_NONE, 'Include soft deletion trait'],
         ], parent::getOptions());
     }
 
@@ -145,7 +146,15 @@ class MigrationCommand extends GeneratorCommand
 			$replace = array_combine(['schema_up', 'schema_down'], $schema);
 		}
 
-		return array_merge(parent::getData(), $replace, $this->getRelationsData(), ['schema' => $this->getSchema()]);
+		return array_merge(
+			parent::getData(),
+			$replace,
+			$this->getRelationsData(),
+			[
+				'schema' => $this->getSchema(),
+				'softDeletes' => $this->option('soft-deletes'),
+			]
+		);
 	}
 
 

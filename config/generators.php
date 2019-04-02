@@ -39,12 +39,6 @@ return [
 		'directory_format' => 'strtolower',
 		'directory_namespace' => true
 	],
-	'asset' => [
-		'path' => './resources/assets/js/',
-		'file_type' => '',
-		'directory_format' => 'strtolower',
-		'directory_namespace' => true
-	],
 	'model' => [
 		'namespace' => '',
 		'path' => './app/'
@@ -55,7 +49,13 @@ return [
 	],
 	'resource' => [
 		'namespace' => '\Http\Resources',
-		'path' => './app/Http/Resources/'
+		'path' => './app/Http/Resources/',
+		'postfix' => 'Resource',
+	],
+	'form_resource' => [
+		'namespace' => '\Http\Forms',
+		'path' => './app/Http/Forms/',
+		'postfix' => 'Form',
 	],
 	'request' => [
 		'namespace' => '\Http\Requests',
@@ -72,6 +72,12 @@ return [
 		'path' => './app/Http/Controllers/',
 		'postfix' => 'Controller',
 		'directory_namespace' => true,
+	],
+	'admin' => [
+		'path' => './console/src/',
+		'file_type' => '',
+		'directory_format' => 'strtolower',
+		'directory_namespace' => true
 	],
 	'seed' => [
 		'path' => './database/seeds/',
@@ -133,17 +139,14 @@ return [
         'view_create_edit' => 'create_edit',
     ],
 
-    /*
-    |--------------------------------------------------------------------------
-    | Resource Assets [stub_key | name of the file]
-    |--------------------------------------------------------------------------
-    */
+	/*
+	|--------------------------------------------------------------------------
+	| Admin assets [stub_key | name of the file]
+	|--------------------------------------------------------------------------
+	*/
 
-    'resource_assets' => [
-        'asset_index' => 'Index.vue',
-        'asset_create' => 'Create.vue',
-        'asset_edit' => 'Edit.vue',
-        'asset_show' => 'Show.vue',
-    ],
+	'admin_assets' => [
+		// List of stubs vary for each project
+	],
 
 ];

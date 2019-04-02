@@ -1,1 +1,2 @@
-Route::apiResource('{{ $route }}', '{{ $controller }}');
+Route::pattern('{{ $resource }}', '\d+');
+Route::resource('{{ $route }}', '{{ $controller }}');

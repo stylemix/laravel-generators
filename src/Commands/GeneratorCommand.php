@@ -53,7 +53,7 @@ abstract class GeneratorCommand extends LaravelGeneratorCommand
         // check the path where to create and save file
 	    $path = $this->getPath('');
 	    if ($this->files->exists($path) && $this->optionForce() === false) {
-		    $this->error(ucfirst($this->getType()) . ' already exists!');
+		    $this->warn($path . ' already exists! Use --force to overwrite the file.');
 
 		    return;
 	    }
@@ -65,8 +65,8 @@ abstract class GeneratorCommand extends LaravelGeneratorCommand
 	    $this->files->put($path, $this->buildClass());
 
 	    // output to console
-	    $this->info(ucfirst($this->getType()) . ' created successfully.');
-	    $this->info('- ' . $path);
+	    $this->comment(ucfirst($this->getType()) . ' created successfully.');
+	    $this->line('- ' . $path);
 
 	    // if we need to run "composer dump-autoload"
 	    if ($this->settings['dump_autoload'] === true) {
@@ -435,6 +435,19 @@ abstract class GeneratorCommand extends LaravelGeneratorCommand
         return $stub;
     }
 
+	/**
+	 * Confirm a question with the user only in interactive mode.
+
+	 * @param string $question
+	 * @param bool $default
+	 *
+	 * @return bool
+	 */
+	protected function confirmOptional($question, $default = false)
+	{
+		return !$this->option('interactive') || $this->confirm($question, $default);
+	}
+
     /**
      * Get the console command arguments.
      *
@@ -457,25 +470,11 @@ abstract class GeneratorCommand extends LaravelGeneratorCommand
         return [
             ['plain', null, InputOption::VALUE_NONE, 'Generate an empty class.'],
             ['force', null, InputOption::VALUE_NONE, 'Warning: Override file if it already exist'],
-            [
-                'stub',
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'The name of the view stub you would like to generate.'
-            ],
-            [
-                'name',
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'If you want to override the name of the file that will be generated'
-            ],
-            [
-                'extra',
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'Extra information to use in stubs'
-            ],
-        ];
+            ['stub', null, InputOption::VALUE_OPTIONAL, 'The name of the view stub you would like to generate.'],
+            ['name', null, InputOption::VALUE_OPTIONAL, 'If you want to override the name of the file that will be generated'],
+            ['extra', null, InputOption::VALUE_OPTIONAL, 'Extra information to use in stubs'],
+			['interactive', 'i', InputOption::VALUE_NONE, 'Ask questions instead of using defaults.'],
+		];
     }
 
 	protected function getExtra() {

@@ -89,7 +89,7 @@ trait NameBuilders
 	}
 
 	/**
-	 * Get the plural uppercase name of the resouce
+	 * Get the plural uppercase name of the resource
 	 * @param null $name
 	 * @return null|string
 	 */

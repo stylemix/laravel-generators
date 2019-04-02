@@ -3,7 +3,9 @@
 namespace {{$namespace}};
 
 use Illuminate\Database\Eloquent\Model;
+@if ($softDeletes)
 use Illuminate\Database\Eloquent\SoftDeletes;
+@endif
 
 /**
  * Class {{$class}}
@@ -11,10 +13,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class {{$class}} extends Model
 {
+@if ($softDeletes)
     use SoftDeletes;
-@if ($extra->has('search'))
-    use Searchable;
-    // {{ $extra['search']->option('type') }}
 @endif
 
     /**

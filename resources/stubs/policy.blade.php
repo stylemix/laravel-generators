@@ -14,7 +14,7 @@ class {{ $class }}
 	/**
 	 * Determine whether the user can view the {{ $resource }}.
 	 *
-	 * @param  \{{ $rootNamespace }}User    $user
+	 * @param  \{{ $rootNamespace }}User $user
 	 * @param  \{{ $rootNamespace }}{{ $model }} ${{ $resource }}
 	 *
 	 * @return mixed
@@ -39,7 +39,7 @@ class {{ $class }}
 	/**
 	 * Determine whether the user can update the {{ $resource }}.
 	 *
-	 * @param  \{{ $rootNamespace }}User    $user
+	 * @param  \{{ $rootNamespace }}User $user
 	 * @param  \{{ $rootNamespace }}{{ $model }} ${{ $resource }}
 	 *
 	 * @return mixed
@@ -52,7 +52,7 @@ class {{ $class }}
 	/**
 	 * Determine whether the user can delete the {{ $resource }}.
 	 *
-	 * @param  \{{ $rootNamespace }}User    $user
+	 * @param  \{{ $rootNamespace }}User $user
 	 * @param  \{{ $rootNamespace }}{{ $model }} ${{ $resource }}
 	 *
 	 * @return mixed
@@ -65,7 +65,7 @@ class {{ $class }}
 	/**
 	 * Determine whether the user can restore the {{ $resource }}.
 	 *
-	 * @param  \{{ $rootNamespace }}User    $user
+	 * @param  \{{ $rootNamespace }}User $user
 	 * @param  \{{ $rootNamespace }}{{ $model }} ${{ $resource }}
 	 *
 	 * @return mixed
@@ -78,7 +78,7 @@ class {{ $class }}
 	/**
 	 * Determine whether the user can permanently delete the {{ $resource }}.
 	 *
-	 * @param  \{{ $rootNamespace }}User    $user
+	 * @param  \{{ $rootNamespace }}User $user
 	 * @param  \{{ $rootNamespace }}{{ $model }} ${{ $resource }}
 	 *
 	 * @return mixed

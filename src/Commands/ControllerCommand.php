@@ -35,7 +35,7 @@ class ControllerCommand extends GeneratorCommand
 	{
 		parent::handle();
 
-		if (!$this->confirm("Add routes to api.php?", 1)) {
+		if (!$this->confirmOptional("Add routes to api.php?", 1)) {
 			return;
 		}
 
@@ -60,8 +60,8 @@ class ControllerCommand extends GeneratorCommand
 
 		$path = '/routes/api.php';
 		if (file_put_contents(base_path() . $path, PHP_EOL . $line, FILE_APPEND)) {
-			$this->info('Route registered successfully.');
-			$this->info('- .' . $path);
+			$this->comment('Route registered successfully.');
+			$this->line('- .' . $path);
 		}
 		else {
 			$this->error('Failed to register route.');

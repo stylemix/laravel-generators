@@ -2,8 +2,9 @@
 
 namespace Stylemix\Generators;
 
-use Stylemix\Generators\Commands\AssetCommand;
+use Stylemix\Generators\Commands\AdminCommand;
 use Stylemix\Generators\Commands\FactoryCommand;
+use Stylemix\Generators\Commands\FormCommand;
 use Stylemix\Generators\Commands\JobCommand;
 use Stylemix\Generators\Commands\FileCommand;
 use Stylemix\Generators\Commands\PolicyCommand;
@@ -70,11 +71,12 @@ class GeneratorsServiceProvider extends ServiceProvider
 
         $this->registerCommand(ModelCommand::class, 'model');
         $this->registerCommand(ViewCommand::class, 'view');
+        $this->registerCommand(FormCommand::class, 'form');
         $this->registerCommand(RequestCommand::class, 'request');
         $this->registerCommand(ResourceCommand::class, 'resource');
         $this->registerCommand(PolicyCommand::class, 'policy');
         $this->registerCommand(ControllerCommand::class, 'controller');
-        $this->registerCommand(AssetCommand::class, 'asset');
+        $this->registerCommand(AdminCommand::class, 'admin');
 
         $this->registerCommand(MigrationCommand::class, 'migration');
         $this->registerCommand(MigrationPivotCommand::class, 'migrate.pivot');
