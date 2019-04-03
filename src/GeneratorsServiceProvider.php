@@ -11,6 +11,7 @@ use Stylemix\Generators\Commands\PolicyCommand;
 use Stylemix\Generators\Commands\RequestCommand;
 use Stylemix\Generators\Commands\ResourceCommand;
 use Stylemix\Generators\Commands\SeedCommand;
+use Stylemix\Generators\Commands\TestCommand;
 use Stylemix\Generators\Commands\ViewCommand;
 use Stylemix\Generators\Commands\EventCommand;
 use Stylemix\Generators\Commands\ModelCommand;
@@ -98,6 +99,7 @@ class GeneratorsServiceProvider extends ServiceProvider
         $this->registerCommand(MiddlewareCommand::class, 'middleware');
 
         $this->registerCommand(CrudCommand::class, 'crud');
+        $this->registerCommand(TestCommand::class, 'test');
         $this->registerCommand(FileCommand::class, 'file');
     }
 

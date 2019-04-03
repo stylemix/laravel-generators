@@ -1,19 +1,19 @@
-{!!$phpOpenTag!!}
+{!! $phpOpenTag !!}
 
-namespace {{$namespace}};
+namespace {{ $namespace }};
 
-use {{$rootNamespace}}{{$model}};
-use {{ $rootNamespace }}Http\Forms\{{$model}}Form;
-use {{ $rootNamespace }}Http\Requests\{{$model}}Request;
-use {{$resourceClassNamespace}}\{{$model}}Resource;
+use {{ $rootNamespace }}{{ $model }};
+use {{ $rootNamespace }}Http\Forms\{{ $model }}Form;
+use {{ $rootNamespace }}Http\Requests\{{ $model }}Request;
+use {{ $resourceClassNamespace }}\{{ $model }}Resource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 
-class {{$class}} extends Controller
+class {{ $class }} extends Controller
 {
 
 	/**
-	 * Display a listing of {{$resource}}.
+	 * Display a listing of {{ $resource }}.
 	 *
 	 * @param \Illuminate\Http\Request $request
 	 *
@@ -22,13 +22,13 @@ class {{$class}} extends Controller
 	 */
 	public function index(Request $request)
 	{
-		$this->authorize('manage', {{$model}}::class);
+		$this->authorize('manage', {{ $model }}::class);
 
-		return {{$model}}Resource::collection({{$model}}::paginate());
+		return {{ $model }}Resource::collection({{ $model }}::paginate());
 	}
 
 	/**
-	 * Creation form for {{$resource}} resource
+	 * Creation form for {{ $resource }} resource
 	 *
 	 * @param \Illuminate\Http\Request $request
 	 *
@@ -37,91 +37,93 @@ class {{$class}} extends Controller
 	 */
 	public function create(Request $request)
 	{
-		$this->authorize('create', {{$model}}::class);
+		$this->authorize('create', {{ $model }}::class);
 
-		return {{$model}}Form::make();
+		return {{ $model }}Form::make();
 	}
 
 	/**
-	 * Store a newly created {{$resource}} in storage.
+	 * Store a newly created {{ $resource }} in storage.
 	 *
-	 * @param \{{ $rootNamespace }}Http\Requests\{{$model}}Request $request
+	 * @param \{{ $rootNamespace }}Http\Requests\{{ $model }}Request $request
 	 *
 	 * @return mixed
 	 * @throws \Illuminate\Auth\Access\AuthorizationException
 	 */
-	public function store({{$model}}Request $request)
+	public function store({{ $model }}Request $request)
 	{
-		$this->authorize('create', {{$model}}::class);
+		$this->authorize('create', {{ $model }}::class);
 
- 	 	${{$resource}} = {{$model}}::create($request->input());
+		$request->fill(${{ $resource }} = new {{ $model }}());
+		${{ $resource }}->save();
 
- 	 	return {{$model}}Resource::make(${{$resource}});
+		return {{ $model }}Resource::make(${{ $resource }});
 	}
 
 	/**
-	 * Display the specified {{$resource}}.
+	 * Display the specified {{ $resource }}.
 	 *
-	 * @param \{{ $rootNamespace }}{{$model}} $country
+	 * @param \{{ $rootNamespace }}{{ $model }} ${{ $resource }}
 	 *
 	 * @return mixed
 	 * @throws \Illuminate\Auth\Access\AuthorizationException
 	 */
-	public function show({{$model}} ${{$resource}})
+	public function show({{ $model }} ${{ $resource }})
 	{
-		$this->authorize('view', ${{$resource}});
+		$this->authorize('view', ${{ $resource }});
 
-		return {{$model}}Resource::make(${{$resource}});
+		return {{ $model }}Resource::make(${{ $resource }});
 	}
 
 	/**
-	 * Edit form for {{$resource}} resource
+	 * Edit form for {{ $resource }} resource
 	 *
 	 * @param \Illuminate\Http\Request $request
-	 * @param \{{ $rootNamespace }}{{$model}} ${{$resource}}
+	 * @param \{{ $rootNamespace }}{{ $model }} ${{ $resource }}
 	 *
 	 * @return mixed
 	 * @throws \Illuminate\Auth\Access\AuthorizationException
 	 */
-	public function edit(Request $request, {{$model}} ${{$resource}})
+	public function edit(Request $request, {{ $model }} ${{ $resource }})
 	{
-		$this->authorize('update', ${{$resource}});
+		$this->authorize('update', ${{ $resource }});
 
-		return {{$model}}Form::make(${{$resource}});
+		return {{ $model }}Form::make(${{ $resource }});
 	}
 
 	/**
-	 * Update the specified {{$resource}} in storage.
+	 * Update the specified {{ $resource }} in storage.
 	 *
-	 * @param \{{ $rootNamespace }}Http\Requests\{{$model}}Request $request
-	 * @param \{{ $rootNamespace }}{{$model}} $country
+	 * @param \{{ $rootNamespace }}Http\Requests\{{ $model }}Request $request
+	 * @param \{{ $rootNamespace }}{{ $model }} ${{ $resource }}
 	 *
 	 * @return mixed
 	 * @throws \Illuminate\Auth\Access\AuthorizationException
 	 */
- 	public function update({{$model}}Request $request, {{$model}} ${{$resource}})
+	public function update({{ $model }}Request $request, {{ $model }} ${{ $resource }})
 	{
-		$this->authorize('update', ${{$resource}});
+		$this->authorize('update', ${{ $resource }});
 
- 	 	${{$resource}}->update($request->input());
+		$request->fill(${{ $resource }});
+		${{ $resource }}->save();
 
- 	 	return {{$model}}Resource::make(${{$resource}});
+		return {{ $model }}Resource::make(${{ $resource }});
 	}
 
 	/**
-	 * Remove the specified {{$resource}} from storage.
+	 * Remove the specified {{ $resource }} from storage.
 	 *
-	 * @param \{{ $rootNamespace }}{{$model}} $country
+	 * @param \{{ $rootNamespace }}{{ $model }} ${{ $resource }}
 	 *
 	 * @return mixed
 	 * @throws \Exception
 	 */
-	public function destroy({{$model}} ${{$resource}})
+	public function destroy({{ $model }} ${{ $resource }})
 	{
-		$this->authorize('delete', ${{$resource}});
+		$this->authorize('delete', ${{ $resource }});
 
- 	 	${{$resource}}->delete();
+		${{ $resource }}->delete();
 
- 	 	return Response::json([], 202);
+		return Response::json([], 202);
 	}
 }

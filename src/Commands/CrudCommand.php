@@ -46,6 +46,7 @@ class CrudCommand extends GeneratorCommand
 		$this->callAdmin();
 		$this->callMigration();
         $this->callSeeder();
+        $this->callTestCrud();
         $this->callMigrate();
 
         $this->info('All Done!');
@@ -191,6 +192,18 @@ class CrudCommand extends GeneratorCommand
 
         if ($this->confirmOptional("Create a seed ($name) for the $this->resource resource?", 1)) {
             $this->callCommand('seed', $name);
+        }
+    }
+
+    /**
+     * Call the generate:test command
+     */
+    protected function callTestCrud()
+    {
+        if ($this->confirmOptional("Create a test for the $this->resource resource?", 1)) {
+            $this->callCommand('test', $this->getCollectionUpperName(), [
+            	'--stub' => 'test_crud',
+			]);
         }
     }
 

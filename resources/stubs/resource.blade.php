@@ -1,4 +1,4 @@
-{!!$phpOpenTag!!}
+{!! $phpOpenTag !!}
 
 namespace App\Http\Resources;
 

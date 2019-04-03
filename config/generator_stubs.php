@@ -46,5 +46,7 @@ return [
 	'console_stub' => base_path() . '/vendor/stylemix/laravel-generators/resources/stubs/console.stub',
 	'middleware_stub' => base_path() . '/vendor/stylemix/laravel-generators/resources/stubs/middleware.stub',
 	'contract_stub' => base_path() . '/vendor/stylemix/laravel-generators/resources/stubs/contract.stub',
+	'test_stub' => base_path() . '/vendor/stylemix/laravel-generators/resources/stubs/test.blade.php',
+	'test_crud_stub' => base_path() . '/vendor/stylemix/laravel-generators/resources/stubs/test_crud.blade.php',
 
 ];

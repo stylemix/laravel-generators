@@ -124,6 +124,11 @@ return [
 		'namespace' => '\Contracts',
 		'path' => './app/Contracts/',
 	],
+	'test' => [
+		'directory_namespace' => true,
+		'namespace' => '\Tests',
+		'path' => './tests/Feature/',
+	],
 
     /*
     |--------------------------------------------------------------------------
