@@ -126,8 +126,9 @@ return [
 	],
 	'test' => [
 		'directory_namespace' => true,
-		'namespace' => '\Tests',
+		'namespace' => '\Tests\Feature',
 		'path' => './tests/Feature/',
+		'postfix' => 'Test',
 	],
 
     /*

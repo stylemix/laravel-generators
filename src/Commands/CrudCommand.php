@@ -84,7 +84,7 @@ class CrudCommand extends GeneratorCommand
 	protected function callFactory()
 	{
 		if ($this->confirmOptional('Create a model factory?', 1)) {
-			$this->callCommand('factory', $this->getResourceName(), [
+			$this->callCommand('factory', $this->getModelName(), [
 				'--schema' => $this->option('schema'),
 			]);
 		}
