@@ -12,6 +12,19 @@ class {{ $class }}
 	use HandlesAuthorization;
 
 	/**
+	 * Determine whether the user have access for all actions.
+	 *
+	 * @param \{{ $rootNamespace }}User $user
+	 * @param string $ability
+	 *
+	 * @return  mixed
+	 */
+	public function before(User $user, $ability)
+	{
+		//
+	}
+
+	/**
 	 * Determine whether the user can view the {{ $resource }}.
 	 *
 	 * @param  \{{ $rootNamespace }}User $user
